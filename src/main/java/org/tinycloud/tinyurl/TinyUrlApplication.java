@@ -17,20 +17,19 @@ public class TinyUrlApplication {
     public static void main(String[] args) {
         ConfigurableApplicationContext application = SpringApplication.run(TinyUrlApplication.class, args);
         Environment env = application.getEnvironment();
-        String ip = LocalHostUtils.getLocalHost();
-        String port = env.getProperty("server.port");
-
-        log.info("\n----------------------------------------------------------\n\t" +
+        var ip = LocalHostUtils.getLocalHost();
+        var port = env.getProperty("server.port");
+        var banner = "\n----------------------------------------------------------\n\t" +
                 "tiny-url 启动成功！\n\t" +
                 "┌─┐┬ ┬┌─┐┌─┐┌─┐┌─┐┌─┐  ┌─┐┌┬┐┌─┐┬─┐┌┬┐┌─┐┌┬┐   ┬\n\t" +
                 "└─┐│ ││  │  ├┤ └─┐└─┐  └─┐ │ ├─┤├┬┘ │ ├┤  ││   │\n\t" +
                 "└─┘└─┘└─┘└─┘└─┘└─┘└─┘  └─┘ ┴ ┴ ┴┴└─ ┴ └─┘─┴┘   o\n\t" +
-                "-------------------------------------------------------------------------\n\t" +
                 "Access URLs:\n\t" +
                 "Local: \t\thttp://localhost:" + port + "/\n\t" +
                 "External: \thttp://" + ip + ":" + port + "/\n\t" +
-                "Swagger-UI: http://" + ip + ":" + port + "/doc.html\n\t" +
-                "-------------------------------------------------------------------------");
+                "Swagger-UI: http://" + ip + ":" + port + "/doc.html\n" +
+                "-------------------------------------------------------------------------";
+        log.info(banner);
     }
 
 }
