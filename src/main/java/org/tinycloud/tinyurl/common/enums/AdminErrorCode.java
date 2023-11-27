@@ -1,8 +1,9 @@
 package org.tinycloud.tinyurl.common.enums;
 
 public enum AdminErrorCode {
+    ADMIN_NOT_LOGIN("2001", "会话已过期，请重新登录！"),
 
-    USERNAME_OR_PASSWORD_MISMATCH("2001", "未知错误！"),
+    USERNAME_OR_PASSWORD_MISMATCH("2002", "用户名或密码错误！"),
 
     ;
 

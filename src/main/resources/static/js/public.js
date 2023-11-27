@@ -35,10 +35,15 @@ $.ajax = function (opt) {
         // 只有 HTTP 状态码为 200（包括 200-299 范围内）的 Ajax 请求才会触发 success 回调函数
         // 其他状态码将触发 error 回调函数
         success: function (res, textStatus) {
-            if (res.code === 401 || res.code === '401') {
+            if (res.code === '3001') {
                 layer.alert('会话已过期，请重新登录', function (index) {
                     layer.close(index);
-                    window.location.href = "/page/login.html";
+                    window.location.href = "/page/tenant/login.html";
+                });
+            } else if (res.code === '2001') {
+                layer.alert('会话已过期，请重新登录', function (index) {
+                    layer.close(index);
+                    window.location.href = "/page/admin/login.html";
                 });
             } else {
                 // 其他返回码不是401的请求，都由各页面自行处理
@@ -51,7 +56,7 @@ $.ajax = function (opt) {
             if (sessionStorage.getItem('token')) {
                 XHR.setRequestHeader("token", sessionStorage.getItem('token'));
             }
-            XHR.setRequestHeader("Powered-By", 'XXX');
+            XHR.setRequestHeader("Powered-By", 'TINYCLOUD');
             // 提交前回调方法
             fn.beforeSend(XHR);
         },
