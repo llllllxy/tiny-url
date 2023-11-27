@@ -1,27 +1,35 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <configuration>
+    <!--默认配置-->
+    <include resource="org/springframework/boot/logging/logback/defaults.xml" />
     <!-- 日志存放路径 -->
-    <property name="LOG_PATH" value="/opt/tinyurl/logs" />
+    <property name="LOG_PATH" value="/opt/tinyurl/logs"/>
     <!-- 日志输出格式 -->
-    <property name="CONSOLE_LOG_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] [%-5level]  %c [%method,%line]  : %msg%n"/>
+    <property name="CONSOLE_LOG_PATTERN"
+              value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] [%-5level]  %c [%method,%line]  : %msg%n"/>
     <!-- 日志输出格式 -->
-    <property name="FILE_LOG_PATTERN" value="%d{yyyy-MM-dd} %d{HH:mm:ss.SSS} [%thread] %-5level %logger - [%method,%line] - %msg%n"/>
+    <property name="FILE_LOG_PATTERN"
+              value="%d{yyyy-MM-dd} %d{HH:mm:ss.SSS} [%thread] %-5level %logger - [%method,%line] - %msg%n"/>
 
     <!-- 控制台输出 -->
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
-        <layout class="ch.qos.logback.classic.PatternLayout">
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
             <pattern>
                 ${CONSOLE_LOG_PATTERN}
             </pattern>
-        </layout>
+        </encoder>
     </appender>
 
     <!-- 文件输出 -->
     <appender name="APPLICATION" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <encoder>
-            <pattern>${FILE_LOG_PATTERN}</pattern>
+            <pattern>
+                ${FILE_LOG_PATTERN}
+            </pattern>
             <!-- 日志编码 -->
-            <charset class="java.nio.charset.Charset">UTF-8</charset>
+            <charset class="java.nio.charset.Charset">
+                UTF-8
+            </charset>
         </encoder>
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
             <fileNamePattern>${LOG_PATH}/application.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
@@ -33,7 +41,7 @@
 
     <!--全局应用该日志配置-->
     <root level="INFO">
-        <appender-ref ref = "CONSOLE"/>
-        <appender-ref ref = "APPLICATION"/>
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="APPLICATION"/>
     </root>
 </configuration>
