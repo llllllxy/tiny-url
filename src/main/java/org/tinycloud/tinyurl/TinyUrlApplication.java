@@ -7,9 +7,6 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.env.Environment;
 import org.tinycloud.tinyurl.common.utils.LocalHostUtils;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-
 @Slf4j
 @SpringBootApplication
 public class TinyUrlApplication {
