@@ -27,7 +27,7 @@ spring:
       add-mappings: false
   datasource:
     type: com.alibaba.druid.pool.DruidDataSource
-    url: jdbc:mysql://127.0.0.1:3306/tiny-job?useUnicode=true&characterEncoding=utf8&serverTimezone=GMT%2B8&zeroDateTimeBehavior=convertToNull&useSSL=true
+    url: jdbc:mysql://127.0.0.1:3306/tiny-url?useUnicode=true&characterEncoding=utf8&serverTimezone=GMT%2B8&zeroDateTimeBehavior=convertToNull&useSSL=true
     driverClassName: com.mysql.cj.jdbc.Driver
     username: root
     password: 123654
