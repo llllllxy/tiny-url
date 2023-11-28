@@ -3,6 +3,7 @@ package org.tinycloud.tinyurl.function.tenant.bean.entity;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -19,6 +20,7 @@ import java.util.Date;
  */
 @Getter
 @Setter
+@TableName("t_url_access_log")
 public class TUrlAccessLog implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
