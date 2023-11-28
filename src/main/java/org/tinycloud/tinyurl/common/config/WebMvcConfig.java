@@ -1,14 +1,17 @@
 package org.tinycloud.tinyurl.common.config;
 
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.util.ArrayList;
 import java.util.List;
-
+import java.util.Objects;
 
 /**
  * <p>
@@ -24,7 +27,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        List<String> excludePath = new ArrayList<String>() {{
+        List<String> excludePath = new ArrayList<>() {{
             // 开放登录接口
             add("/auth/login");
             add("/auth/getCode");
@@ -64,4 +67,21 @@ public class WebMvcConfig implements WebMvcConfigurer {
         registry.addResourceHandler("/webjars/**").addResourceLocations("classpath:/META-INF/resources/webjars/");
     }
 
+
+    /**
+     * 这里加这个配置是为了解决Jackson2ObjectMapperBuilderCustomizer自定义配置不生效的问题
+     * 参考自：https://www.jianshu.com/p/09169bd31f72
+     */
+    @Autowired(required = false)
+    private MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter;
+
+    @Override
+    public void extendMessageConverters(List<HttpMessageConverter<?>> converters) {
+        converters.removeIf(converter -> converter instanceof MappingJackson2HttpMessageConverter);
+        if (Objects.isNull(mappingJackson2HttpMessageConverter)) {
+            converters.add(0, new MappingJackson2HttpMessageConverter());
+        } else {
+            converters.add(0, mappingJackson2HttpMessageConverter);
+        }
+    }
 }
