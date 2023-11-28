@@ -1,0 +1,125 @@
+<div id="content" style="padding-top: 20px">
+    <div class="layui-row">
+        <div class="layui-col-xs6  layui-col-xs-offset3" style="text-align: center">
+            <span style="color: #00162A;font-size: 30px;font-weight: bold;line-height: 60px;cursor: pointer">
+                专业的短链和数据分析平台
+            </span>
+        </div>
+    </div>
+    <div style="width: 800px;margin-top: 20px;margin-left: auto;margin-right: auto">
+        <div class="layui-panel">
+            <div style="padding: 20px 10px 20px 10px;">
+                <div class="layui-form layui-row layui-col-space16">
+                    <div class="layui-col-md8">
+                        <input type="text" name="originalUrl" placeholder="请输入您的链接，如：http://www.thymeleaf.org" class="layui-input">
+                    </div>
+                    <div class="layui-col-md2">
+                        <select name="validityPeriod">
+                            <option value="">有效期</option>
+                            <option value="sevenday">七天</option>
+                            <option value="threemonth">3个月</option>
+                            <option value="halfyear">半年</option>
+                            <option value="forever">永久</option>
+                        </select>
+                    </div>
+                    <div class="layui-col-md2">
+                        <button type="reset" class="layui-btn layui-bg-blue">提交</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="layui-panel" style="margin-top: 10px">
+            <div style="padding: 32px 10px 32px 10px;">
+                <div class="layui-row layui-col-space24">
+                    <div class="layui-col-md2">
+                        <div id="qrCodeDiv" style="width: 100px; height: 100px; background-color: #00f7de"> </div>
+                    </div>
+
+                    <div class="layui-col-md10">
+                        <div class="layui-row">
+                            <span class="layui-font-16">
+                                短链接：
+                            </span>
+                            <span class="layui-font-16" style="text-decoration: underline;">
+                                <a href="http://127.0.0.1:8076/14G65O" target="_blank" id="shorturl">http://127.0.0.1:8076/14G65O</a>
+                            </span>
+                            <span class="layui-font-16">
+                                &nbsp;<i id="tips" class="layui-icon layui-icon-list" style="color: black; font-weight: bold; cursor: pointer"></i>
+                            </span>
+                        </div>
+                        <div class="layui-row" style="margin-top: 4px">
+                             <span class="layui-font-16" style="color: #C5C7CE">
+                                原始链接：
+                             </span>
+                            <span class="layui-font-16" style="color: #C5C7CE; text-decoration: underline;">
+                                <a href="https://layui.dev/docs" target="_blank" style="color: #C5C7CE">https://layui.dev/docs</a>
+                            </span>
+                        </div>
+                        <div class="layui-row" style="margin-top: 4px">
+                            <span class="layui-font-14">
+                                当前您尚未登录，生成的短链接无法保存和查看专业统计分析数据，请您
+                            </span>
+                            <span class="layui-font-14" style="text-decoration: underline;">
+                                <a href="/page/tenant/login.html">登录</a>
+                            </span>
+                            <span class="layui-font-14">
+                                后使用完整功能！
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    layui.use(['form', 'util', 'layer'], function () {
+        var form = layui.form,
+            layer = layui.layer;
+        form.render();
+
+        // 轮播图
+        var wh = $(window).height() - 54;
+        $('#content').height(wh);
+
+        $('#tips').on('mouseenter', function() {
+            var elem = this;
+            layer.tips('点击复制短链', elem);
+        });
+
+        $('#tips').on('mouseleave', function() {
+            layer.closeAll('tips');
+        });
+
+        $('#tips').on('click', function() {
+            var text = $("#shorturl").text();
+            handleClipboard(text, "#tips");
+        });
+
+        function handleClipboard(text, event) {
+            const clipboard = new ClipboardJS(event, {
+                text: () => text
+            });
+            clipboard.on('success', () => {
+                clipboardSuccess(text);
+                clipboard.destroy();
+            });
+            clipboard.on('error', () => {
+                clipboardError();
+                clipboard.destroy();
+            });
+            clipboard.onClick(event);
+        }
+
+        function clipboardSuccess(text) {
+            layer.msg('已复制到粘贴板');
+        }
+
+        function clipboardError() {
+            layer.msg('复制出错');
+        }
+
+    });
+</script>
