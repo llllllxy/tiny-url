@@ -9,4 +9,9 @@ package org.tinycloud.tinyurl.common.constant;
  * @since 2023-03-07 15:47:38
  */
 public class GlobalConstant {
+
+    /**
+     * 限流 redis key
+     */
+    public static final String LIMIT_REDIS_KEY = "tinyurl:limit:";
 }

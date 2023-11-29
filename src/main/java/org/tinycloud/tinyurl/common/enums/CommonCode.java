@@ -23,6 +23,7 @@ public enum CommonCode {
     NOT_SUPPORT("409", "不支持的请求"),
     ALREADY_EXECUTING("410", "程序正在执行，请稍后再试"),
     CLIENT_TYPE_IS_NULL("411", "客户端类型不能为空"),
+    DOING_IT_TOO_FAST("412", "操作频率过高，请稍后再试！"),
     UNKNOWN_ERROR("500", "系统未知错误"),
     NOT_GATEWAY_FORWARD_REQUEST("501", "非网关转发请求，禁止访问"),
     ;

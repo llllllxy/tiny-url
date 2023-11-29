@@ -24,6 +24,8 @@ import java.util.Objects;
 @Configuration
 public class WebMvcConfig implements WebMvcConfigurer {
 
+    @Autowired
+    private AccessLimitInterceptor accessLimitInterceptor;
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
@@ -44,6 +46,9 @@ public class WebMvcConfig implements WebMvcConfigurer {
         }};
 
 
+        // 注册限流拦截器
+        registry.addInterceptor(accessLimitInterceptor)
+                .addPathPatterns("/**");
     }
 
     /**
