@@ -40,7 +40,7 @@ public class ThreadPoolConfig {
 
     @Bean("asyncServiceExecutor")
     public ThreadPoolTaskExecutor asyncServiceExecutor() {
-        logger.info("start asyncServiceExecutor");
+        logger.info("start init asyncServiceExecutor");
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
         // 配置核心线程数
         executor.setCorePoolSize(corePoolSize);
