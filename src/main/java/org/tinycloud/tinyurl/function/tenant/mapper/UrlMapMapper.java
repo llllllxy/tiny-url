@@ -1,5 +1,6 @@
 package org.tinycloud.tinyurl.function.tenant.mapper;
 
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.tinycloud.tinyurl.function.tenant.bean.entity.TUrlMap;
@@ -12,6 +13,8 @@ import org.tinycloud.tinyurl.function.tenant.bean.entity.TUrlMap;
  * @since 2023-11-28 14:19
  */
 @Repository
-public interface UrlMapMapper extends BaseMapper<TUrlMap>{
+public interface UrlMapMapper extends BaseMapper<TUrlMap> {
+
+    int updateUrlVisits(@Param("id") Long id);
 
 }

@@ -3,6 +3,7 @@ package org.tinycloud.tinyurl.function.tenant.service;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.google.common.hash.BloomFilter;
 import com.google.common.hash.Funnels;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
@@ -10,14 +11,15 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 import org.tinycloud.tinyurl.common.constant.GlobalConstant;
-import org.tinycloud.tinyurl.common.utils.JsonUtils;
-import org.tinycloud.tinyurl.common.utils.MurmurHashUtils;
-import org.tinycloud.tinyurl.common.utils.StrUtils;
+import org.tinycloud.tinyurl.common.utils.*;
+import org.tinycloud.tinyurl.common.utils.web.UserAgentUtils;
+import org.tinycloud.tinyurl.function.tenant.bean.entity.TUrlAccessLog;
 import org.tinycloud.tinyurl.function.tenant.bean.entity.TUrlMap;
 import org.tinycloud.tinyurl.function.tenant.mapper.UrlAccessLogMapper;
 import org.tinycloud.tinyurl.function.tenant.mapper.UrlMapMapper;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Date;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
@@ -137,4 +139,30 @@ public class UrlMapService {
         return tUrlMap;
     }
 
+
+    /**
+     * 更新访问次数，插入访问日志
+     *
+     * @param surl 短链
+     */
+    public void updateUrlVisits(HttpServletRequest request, TUrlMap entity) {
+        // 获取ip这一行不能放在异步执行
+        final String accessIp = IpGetUtils.getIpAddr(request);
+        final String accessUserAgent = JsonUtils.toJsonString(UserAgentUtils.getUserAgent(request));
+        asyncServiceExecutor.execute(() -> {
+            // 先更新访问次数
+            this.urlMapMapper.updateUrlVisits(entity.getId());
+
+            // 再插入访问日志
+            TUrlAccessLog urlAccessLog = new TUrlAccessLog();
+            urlAccessLog.setTenantId(entity.getTenantId());
+            urlAccessLog.setUrlId(entity.getId());
+            urlAccessLog.setAccessIp(accessIp);
+            String accessAddress = IpAddressUtils.getAddressByIP(accessIp);
+            urlAccessLog.setAccessAddress(accessAddress);
+            urlAccessLog.setAccessUserAgent(accessUserAgent);
+            urlAccessLog.setAccessTime(new Date());
+            this.urlAccessLogMapper.insert(urlAccessLog);
+        });
+    }
 }

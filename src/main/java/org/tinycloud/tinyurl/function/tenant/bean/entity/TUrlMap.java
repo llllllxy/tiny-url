@@ -39,7 +39,7 @@ public class TUrlMap implements Serializable {
     private Integer visits;
 
     @TableField("expire_time")
-    private String expireTime;
+    private Date expireTime;
 
     @TableField("status")
     private Integer status;
