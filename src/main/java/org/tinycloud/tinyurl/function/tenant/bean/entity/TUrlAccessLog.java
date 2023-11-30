@@ -35,7 +35,7 @@ public class TUrlAccessLog implements Serializable {
     private Long urlId;
 
     @TableField("access_time")
-    private String accessTime;
+    private Date accessTime;
 
     @TableField("access_ip")
     private String accessIp;
