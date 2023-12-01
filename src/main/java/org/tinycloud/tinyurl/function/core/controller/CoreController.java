@@ -27,6 +27,11 @@ public class CoreController {
     @Autowired
     private UrlMapService urlMapService;
 
+    @GetMapping("/")
+    public String redirect() {
+        return "redirect:/page/index.html";
+    }
+
     @GetMapping("/{surl}")
     public String redirect(@PathVariable("surl") String surl, HttpServletRequest request) {
         // 根据断链，获取原始url
