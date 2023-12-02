@@ -23,7 +23,7 @@
                         </select>
                     </div>
                     <div class="layui-col-md2">
-                        <button class="layui-btn" lay-submit lay-filter="generate" id="generate">提交</button>
+                        <button class="layui-btn layui-btn-fluid" lay-submit lay-filter="generate" id="generate">提交</button>
                     </div>
                 </div>
             </div>
@@ -53,7 +53,7 @@
                                 原始链接：
                              </span>
                             <span class="layui-font-16" style="color: #C5C7CE; text-decoration: underline;">
-                                <a href="https://layui.dev/docs" target="_blank" style="color: #C5C7CE">https://layui.dev/docs</a>
+                                <a href="https://layui.dev/docs" target="_blank" style="color: #C5C7CE" id="longurl">https://layui.dev/docs</a>
                             </span>
                         </div>
                         <div class="layui-row" style="margin-top: 4px">
@@ -104,6 +104,9 @@
                             $("#resultContent").removeClass("layui-hide")
                             $("#shorturl").text(shortUrl);
                             $('#shorturl').attr('href', shortUrl);
+                            $("#longurl").text(formData.originalUrl);
+                            $('#longurl').attr('href', formData.originalUrl);
+
                             createQrcode(shortUrl);
                         });
                     } else {
