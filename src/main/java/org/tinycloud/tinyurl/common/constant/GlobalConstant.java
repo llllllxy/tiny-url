@@ -34,4 +34,9 @@ public class GlobalConstant {
      * 限流 redis key
      */
     public static final String LIMIT_REDIS_KEY = "tinyurl:limit:";
+
+    /**
+     * 短链缓存 redis key
+     */
+    public static final String URL_CACHE_REDIS_KEY = "tinyurl:urlcache:";
 }
