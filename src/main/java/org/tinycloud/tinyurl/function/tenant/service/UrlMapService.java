@@ -64,7 +64,7 @@ public class UrlMapService {
 
 
     public TUrlMap getUrlMapBySurl(String surl) {
-        String jsonString = stringRedisTemplate.opsForValue().get(surl);
+        String jsonString = stringRedisTemplate.opsForValue().get(GlobalConstant.URL_CACHE_REDIS_KEY + surl);
         if (StrUtils.isNotEmpty(jsonString)) {
             return JsonUtils.readValue(jsonString, TUrlMap.class);
         } else {
@@ -72,7 +72,7 @@ public class UrlMapService {
                     .eq(TUrlMap::getDelFlag, GlobalConstant.NOT_DELETED)
                     .eq(TUrlMap::getSurl, surl));
             if (Objects.nonNull(urlMap)) {
-                stringRedisTemplate.opsForValue().set(surl, JsonUtils.toJsonString(urlMap), TIMEOUT, TimeUnit.MINUTES);
+                stringRedisTemplate.opsForValue().set(GlobalConstant.URL_CACHE_REDIS_KEY + surl, JsonUtils.toJsonString(urlMap), TIMEOUT, TimeUnit.MINUTES);
                 return urlMap;
             } else {
                 return null;
