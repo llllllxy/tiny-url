@@ -29,7 +29,7 @@
             </div>
         </div>
 
-        <div class="layui-panel" style="margin-top: 10px">
+        <div id="resultContent" class="layui-panel layui-hide" style="margin-top: 10px">
             <div style="padding: 32px 10px 32px 10px;">
                 <div class="layui-row layui-col-space24">
                     <div class="layui-col-md2">
@@ -82,6 +82,7 @@
         // 仅渲染 select 元素
         form.render('select');
 
+        var qrCode;
 
         // 进行生成短链操作
         form.on('submit(generate)', function (data) {
@@ -90,9 +91,29 @@
                 layer.msg('请选择短链有效期！');
                 return false;
             }
-
-
-
+            AjaxUtil.postJSON({
+                url: "/portal/generate",
+                data: JSON.stringify(formData),
+                success: function (res) {
+                    if (res.code === "0") {
+                        let shortUrl = res.data;
+                        layer.msg(res.msg, {
+                            time: 500,
+                            icon: 1
+                        }, function () {
+                            $("#resultContent").removeClass("layui-hide")
+                            $("#shorturl").text(shortUrl);
+                            $('#shorturl').attr('href', shortUrl);
+                            createQrcode(shortUrl);
+                        });
+                    } else {
+                        layer.msg(res.msg, {time: 1000, icon: 2});
+                    }
+                },
+                error: function (error) {
+                    layer.msg("请求失败，请联系系统管理员", {time: 1000, icon: 2});
+                }
+            });
             return false;
         });
 
@@ -136,6 +157,22 @@
 
         function clipboardError() {
             layer.msg('复制出错');
+        }
+
+        function createQrcode(content) {
+            if (qrCode) {
+                qrCode.clear(); // 清除代码
+                qrCode.makeCode(content); // 生成另外一个二维码
+            } else {
+                qrCode = new QRCode(document.getElementById('qrCodeDiv'), {
+                    text: content, //text必须是字符串
+                    width: 100,
+                    height: 100,
+                    colorDark: "#333333", //二维码颜色
+                    colorLight: "#ffffff", //二维码背景色
+                    correctLevel: QRCode.CorrectLevel.L //容错率，L/M/H
+                });
+            }
         }
 
     });
