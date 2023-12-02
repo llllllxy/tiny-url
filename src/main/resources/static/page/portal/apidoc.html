@@ -1,0 +1,75 @@
+<div id="insiderBase">
+    <div class="wrap">
+        <div class="base-info">
+            <div class="base-head">
+                <h2 class="reset">API文档</h2>
+            </div>
+
+            <div id="insider">
+                <div class="comm_view">
+                    <div class="comm_content">
+                        <div class="editor_content">
+                            <div class="layui-tab layui-tab-brief">
+                                <ul class="layui-tab-title">
+                                    <li class="layui-this"><i class="layui-icon layui-icon-vercode"></i>服务授权</li>
+                                    <li><i class="layui-icon layui-icon-add-circle"></i>生成短链</li>
+                                    <li><i class="layui-icon layui-icon-success"></i>启用短链</li>
+                                    <li><i class="layui-icon layui-icon-error"></i>禁用短链</li>
+                                    <li><i class="layui-icon layui-icon-file-b"></i>获取短链详情</li>
+                                    <li><i class="layui-icon layui-icon-refresh-1"></i>更新短链失效时间</li>
+                                </ul>
+                                <div class="layui-tab-content">
+                                    <div class="layui-tab-item layui-show">
+                                        <p><strong>1、请求地址</strong></p>
+                                        <p>http://192.168.0.105:8076/api/getAuthCode</p>
+
+                                        <p><strong>2、请求方式</strong></p>
+                                        <p>POST(application/json)</p>
+
+                                        <p><strong>3、输入参数</strong></p>
+                                        <p>无</p>
+
+                                        <p><strong>4、返回结果</strong></p>
+                                        <p>返回示例：{"code":0, "msg": "获取授权码成功！","data": "7552f531fc0d4b6e9547178aec362e41"}</p>
+                                        <table class="layui-table" style="width: 700px;">
+                                            <colgroup>
+                                                <col width="150">
+                                                <col width="150">
+                                                <col width="150">
+                                                <col width="150">
+                                            </colgroup>
+                                            <tr>
+                                                <th>键</th>
+                                                <th>类型</th>
+                                                <th>描述</th>
+                                                <th>示例值</th>
+                                            </tr>
+                                            <tr>
+                                                <td>code</td>
+                                                <td>String</td>
+                                                <td>标识码，0为成功，其他均为失败</td>
+                                                <td>0</td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                    <div class="layui-tab-item">
+                                        内容-2
+                                    </div>
+                                    <div class="layui-tab-item">
+                                        内容-3
+                                    </div>
+                                    <div class="layui-tab-item">
+                                        内容-4
+                                    </div>
+                                    <div class="layui-tab-item">
+                                        内容-5
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
