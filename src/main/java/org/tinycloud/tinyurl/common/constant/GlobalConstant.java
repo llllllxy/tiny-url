@@ -39,4 +39,21 @@ public class GlobalConstant {
      * 短链缓存 redis key
      */
     public static final String URL_CACHE_REDIS_KEY = "tinyurl:urlcache:";
+
+    /**
+     * 租户图形验证码 redis key
+     */
+    public static final String TENANT_CAPTCHA_CODE_REDIS_KEY = "tinyurl:tenant:captcha:";
+
+
+    /**
+     * 租户token redis key
+     */
+    public static final String TENANT_TOKEN_REDIS_KEY = "tinyurl:tenant:token:";
+
+    /**
+     * 租户token key
+     */
+    public static final String TENANT_TOKEN_KEY = "Authorization";
+
 }

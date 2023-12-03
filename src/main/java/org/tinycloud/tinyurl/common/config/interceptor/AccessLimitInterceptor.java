@@ -1,4 +1,4 @@
-package org.tinycloud.tinyurl.common.config;
+package org.tinycloud.tinyurl.common.config.interceptor;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

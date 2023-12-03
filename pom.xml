@@ -75,6 +75,12 @@
             <artifactId>guava</artifactId>
             <version>32.1.2-jre</version>
         </dependency>
+        <!-- bouncy castle 加密工具包-->
+        <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcprov-jdk18on</artifactId>
+            <version>1.76</version>
+        </dependency>
         <!-- UserAgent 获取浏览器信息-->
         <dependency>
             <groupId>eu.bitwalker</groupId>

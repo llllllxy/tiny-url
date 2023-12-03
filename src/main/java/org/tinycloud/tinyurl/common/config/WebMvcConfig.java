@@ -8,6 +8,8 @@ import org.springframework.http.converter.json.MappingJackson2HttpMessageConvert
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.tinycloud.tinyurl.common.config.interceptor.AccessLimitInterceptor;
+import org.tinycloud.tinyurl.common.config.interceptor.TenantAuthInterceptor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,24 +29,26 @@ public class WebMvcConfig implements WebMvcConfigurer {
     @Autowired
     private AccessLimitInterceptor accessLimitInterceptor;
 
+    @Autowired
+    private TenantAuthInterceptor tenantAuthInterceptor;
+
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        List<String> excludePath = new ArrayList<>() {{
-            // 开放登录接口
-            add("/auth/login");
-            add("/auth/getCode");
+        List<String> tenantIncludePaths = new ArrayList<>() {{
+            add("/tenant/auth/logout");
+            add("/tenant/auth/getInfo");
+            add("/tenant/auth/initMenu");
 
-            // 开放前端静态资源和静态页面
-            add("/static/**");
-            add("/api/**");
-            add("/css/**");
-            add("/images/**");
-            add("/js/**");
-            add("/lib/**");
-            add("/page/**");
-            add("/index.html");
+            add("/tenant/tenant/**"); // 租户信息管理
+            add("/tenant/url/**"); // 租户url短链管理
+            add("/tenant/log/**"); // 租户短链访问日志管理
+            add("/tenant/dashboard/**"); // 租户仪表盘
+            add("/tenant/statistic/**"); // 租户数据统计管理
         }};
 
+        // 注册租户会话拦截器
+        registry.addInterceptor(tenantAuthInterceptor)
+                .addPathPatterns(tenantIncludePaths); // 只拦截这些，其他的都不拦截
 
         // 注册限流拦截器
         registry.addInterceptor(accessLimitInterceptor)
