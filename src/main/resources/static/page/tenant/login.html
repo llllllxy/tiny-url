@@ -70,8 +70,7 @@
                         </div>
                         <div class="layui-col-xs5">
                             <div style="margin-left: 10px;" class="captcha-img">
-                                <img src="https://www.oschina.net/action/user/captcha"
-                                     onclick="this.src='https://www.oschina.net/action/user/captcha?t='+ new Date().getTime();">
+                                <img id="captcha" onclick="getCaptcha()">
                             </div>
                         </div>
                     </div>
@@ -86,12 +85,15 @@
 </div>
 <script src="/lib/jquery/jquery-2.1.4.min.js" charset="utf-8"></script>
 <script src="/lib/jq-module/jquery.particleground.min.js" charset="utf-8"></script>
-<script src="/lib/cipher/sha256.js?v=2.0.0" charset="utf-8"></script>
+<script src="/lib/cipher/sm3.js?v=2.0.0" charset="utf-8"></script>
+<script src="/lib/cipher/sm2.js?v=2.0.0" charset="utf-8"></script>
 <script src="/lib/layui/layui.js?v=2.8.18" charset="utf-8"></script>
 <script src="/js/lay-config.js?v=2.0.0" charset="utf-8"></script>
 <script src="/js/public.js?v=2.0.0" charset="utf-8"></script>
 <script>
     var salt = "W%o$gxG6Nbbg+S4@W5&9VQeud&2O1^V8&We^YwhX-1N+_m7&KQ#JJ@a+UX9Rr5Bk";
+    var verifyKey;
+    var publicKey;
 
     layui.use(['form', 'layer'], function () {
         var $ = layui.jquery,
@@ -111,6 +113,8 @@
             });
         });
 
+        getCaptcha();
+
         // 进行登录操作
         form.on('submit(login)', function (data) {
             data = data.field;
@@ -122,12 +126,16 @@
                 layer.msg('密码不能为空');
                 return false;
             }
-            // 加密
-            data.password = hex_sha256(data.password + salt);
+            // 先对密码做哈希运算
+            let hashData = sm3(data.password + salt);
+            // 然后再做sm2公钥加密
+            let encryptData = sm2.doEncrypt(hashData, publicKey);
+            // 加密结果
+            data.password = encryptData;
 
             startLoading();
             AjaxUtil.postJSON({
-                url: '/auth/login',
+                url: "/tenant/auth/login",
                 data: JSON.stringify(data),
                 success: function (res) {
                     stopLoading();
@@ -151,6 +159,21 @@
             return false;
         });
     });
+
+    // 获取图形验证码
+    function getCaptcha() {
+        AjaxUtil.get({
+            url: "/tenant/auth/getCode",
+            success: function (res) {
+                $("#captcha").prop("src", "data:image/png;base64," + res.data.img);
+                verifyKey = res.data.uuid;
+                publicKey = res.data.publicKey;
+            },
+            error: function (error) {
+                layer.msg(error, {time: 1000, icon: 2});
+            }
+        });
+    }
 
     function startLoading() {
         var loginBtn = document.querySelector('#login');
