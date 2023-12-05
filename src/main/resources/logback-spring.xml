@@ -6,10 +6,10 @@
     <property name="LOG_PATH" value="/opt/tinyurl/logs"/>
     <!-- 日志输出格式 -->
     <property name="CONSOLE_LOG_PATTERN"
-              value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] [%-5level]  %c [%method,%line]  : %msg%n"/>
+              value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] [%-5level] [%X{traceId}] %c [%method,%line]  : %msg%n"/>
     <!-- 日志输出格式 -->
     <property name="FILE_LOG_PATTERN"
-              value="%d{yyyy-MM-dd} %d{HH:mm:ss.SSS} [%thread] %-5level %logger - [%method,%line] - %msg%n"/>
+              value="%d{yyyy-MM-dd} %d{HH:mm:ss.SSS} [%thread] %-5level [%X{traceId}] %logger - [%method,%line] - %msg%n"/>
 
     <!-- 控制台输出 -->
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">

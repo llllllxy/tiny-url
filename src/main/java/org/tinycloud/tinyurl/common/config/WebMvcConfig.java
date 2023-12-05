@@ -10,6 +10,7 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.tinycloud.tinyurl.common.config.interceptor.AccessLimitInterceptor;
 import org.tinycloud.tinyurl.common.config.interceptor.TenantAuthInterceptor;
+import org.tinycloud.tinyurl.common.config.interceptor.TraceIdInterceptor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +26,9 @@ import java.util.Objects;
  */
 @Configuration
 public class WebMvcConfig implements WebMvcConfigurer {
+
+    @Autowired
+    private TraceIdInterceptor traceIdInterceptor;
 
     @Autowired
     private AccessLimitInterceptor accessLimitInterceptor;
@@ -52,6 +56,10 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
         // 注册限流拦截器
         registry.addInterceptor(accessLimitInterceptor)
+                .addPathPatterns("/**");
+
+        // 注册MDC拦截器
+        registry.addInterceptor(traceIdInterceptor)
                 .addPathPatterns("/**");
     }
 
