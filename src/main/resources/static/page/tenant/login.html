@@ -132,6 +132,7 @@
             let encryptData = sm2.doEncrypt(hashData, publicKey);
             // 加密结果
             data.password = encryptData;
+            data.uuid = verifyKey;
 
             startLoading();
             AjaxUtil.postJSON({
@@ -140,15 +141,16 @@
                 success: function (res) {
                     stopLoading();
                     if (res.code == 0) {
-                        sessionStorage.setItem('token', res.data);
-                        sessionStorage.setItem('username', data.username);
+                        sessionStorage.setItem('tenant_token', res.data);
+                        sessionStorage.setItem('tenant_username', data.username);
                         layer.msg('登录成功，欢迎回来!', {
                             time: 1000
                         }, function () {
-                            window.location = '/';
+                            window.location = '/page/tenant/index.html';
                         });
                     } else {
                         layer.msg(res.msg, {time: 1000});
+                        getCaptcha();
                     }
                 },
                 error: function (res) {

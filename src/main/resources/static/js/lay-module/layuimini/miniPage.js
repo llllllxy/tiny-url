@@ -110,16 +110,15 @@ layui.define(["element", "jquery"], function (exports) {
                 $(container).attr("style", "height: calc(100% - 36px)");
             }
             $(container).html('');
-            $.ajax({
+            AjaxUtil.get({
                 url: href,
-                type: 'get',
                 dataType: 'html',
                 success: function (data) {
                     $(container).html(data);
                     element.init();
                 },
-                error: function (xhr, textstatus, thrown) {
-                    return layer.msg('Status:' + xhr.status + '，' + xhr.statusText + '，请稍后再试！');
+                error: function (errorText) {
+                    return layer.msg(errorText);
                 }
             });
         },
@@ -161,29 +160,6 @@ layui.define(["element", "jquery"], function (exports) {
                 }
             }
             return array;
-        },
-
-        /**
-         * 获取指定链接内容
-         * @param href
-         * @returns {string}
-         */
-        getHrefContent: function (href) {
-            var content = '';
-            var v = new Date().getTime();
-            $.ajax({
-                url: href.indexOf("?") > -1 ? href + '&v=' + v : href + '?v=' + v,
-                type: 'get',
-                dataType: 'html',
-                async: false,
-                success: function (data) {
-                    content = data;
-                },
-                error: function (xhr, textstatus, thrown) {
-                    return layer.msg('Status:' + xhr.status + '，' + xhr.statusText + '，请稍后再试！');
-                }
-            });
-            return content;
         },
 
         /**

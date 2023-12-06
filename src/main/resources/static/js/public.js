@@ -51,10 +51,16 @@ $.ajax = function (opt) {
                 fn.success(res, textStatus);
             }
         },
-        beforeSend: function (XHR) {
+        beforeSend: function (XHR, settings) {
+            if (!settings.url.startsWith('/')) {
+                settings.url = "/" + settings.url;
+            }
             // 设置token
-            if (sessionStorage.getItem('token')) {
-                XHR.setRequestHeader("token", sessionStorage.getItem('token'));
+            if (sessionStorage.getItem('tenant_token')) {
+                XHR.setRequestHeader("tenant_token", sessionStorage.getItem('tenant_token'));
+            }
+            if (sessionStorage.getItem('admin_token')) {
+                XHR.setRequestHeader("admin_token", sessionStorage.getItem('admin_token'));
             }
             XHR.setRequestHeader("Powered-By", 'TINYCLOUD');
             // 提交前回调方法

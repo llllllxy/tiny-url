@@ -39,40 +39,49 @@ layui.define(["jquery", "miniMenu", "element","miniPage", "miniTheme"], function
             options.menuChildOpen = options.menuChildOpen || false;
             options.loadingTime = options.loadingTime || 0;
             options.pageAnim = options.pageAnim || false;
-            $.getJSON(options.initUrl, function (data) {
-                if (data == null) {
-                    miniAdmin.error('暂无菜单信息')
-                } else {
-                    miniAdmin.renderLogo(data.logoInfo);
-                    miniAdmin.renderClear(options.clearUrl);
-                    miniAdmin.renderAnim(options.pageAnim);
-                    miniAdmin.listen({
-                        homeInfo:data.homeInfo,
-                        multiModule: options.multiModule,
-                    });
-                    miniMenu.render({
-                        menuList: data.menuInfo,
-                        multiModule: options.multiModule,
-                        menuChildOpen: options.menuChildOpen
-                    });
-                    miniPage.render({
-                        homeInfo:data.homeInfo,
-                        menuList: data.menuInfo,
-                        multiModule: options.multiModule,
-                        renderPageVersion: options.renderPageVersion,
-                        menuChildOpen: options.menuChildOpen,
-                        listenSwichCallback: function () {
-                            miniAdmin.renderDevice();
+            AjaxUtil.get({
+                url: options.initUrl,
+                success: function (res) {
+                    if (res.code == '0') {
+                        var data = res.data;
+                        if (data == null) {
+                            miniAdmin.error('暂无菜单信息')
+                        } else {
+                            miniAdmin.renderLogo(data.logoInfo);
+                            miniAdmin.renderClear(options.clearUrl);
+                            miniAdmin.renderAnim(options.pageAnim);
+                            miniAdmin.listen({
+                                homeInfo: data.homeInfo,
+                                multiModule: options.multiModule,
+                            });
+                            miniMenu.render({
+                                menuList: data.menuInfo,
+                                multiModule: options.multiModule,
+                                menuChildOpen: options.menuChildOpen
+                            });
+                            miniPage.render({
+                                homeInfo: data.homeInfo,
+                                menuList: data.menuInfo,
+                                multiModule: options.multiModule,
+                                renderPageVersion: options.renderPageVersion,
+                                menuChildOpen: options.menuChildOpen,
+                                listenSwichCallback: function () {
+                                    miniAdmin.renderDevice();
+                                }
+                            });
+                            miniTheme.render({
+                                bgColorDefault: options.bgColorDefault,
+                                listen: true,
+                            });
+                            miniAdmin.deleteLoader(options.loadingTime);
                         }
-                    });
-                    miniTheme.render({
-                        bgColorDefault: options.bgColorDefault,
-                        listen: true,
-                    });
-                    miniAdmin.deleteLoader(options.loadingTime);
+                    } else {
+                        miniAdmin.error('获取菜单信息出错: ' + res.msg)
+                    }
+                },
+                error: function (error) {
+                    miniAdmin.error('菜单接口有误');
                 }
-            }).fail(function () {
-                miniAdmin.error('菜单接口有误');
             });
         },
 
@@ -241,16 +250,20 @@ layui.define(["jquery", "miniMenu", "element","miniPage", "miniTheme"], function
                 // 判断是否清理服务端
                 var clearUrl = $(this).attr('data-href');
                 if (clearUrl != undefined && clearUrl != '' && clearUrl != null) {
-                    $.getJSON(clearUrl, function (data, status) {
-                        layer.close(loading);
-                        if (data.code != 1) {
-                            return miniAdmin.error(data.msg);
-                        } else {
-                            return miniAdmin.success(data.msg);
+                    AjaxUtil.get({
+                        url: clearUrl,
+                        success: function (res) {
+                            layer.close(loading);
+                            if (res.code != '0') {
+                                return miniAdmin.error(res.msg);
+                            } else {
+                                return miniAdmin.success(res.msg);
+                            }
+                        },
+                        error: function (errorText) {
+                            layer.close(loading);
+                            return miniAdmin.error('清理缓存接口有误!');
                         }
-                    }).fail(function () {
-                        layer.close(loading);
-                        return miniAdmin.error('清理缓存接口有误');
                     });
                 } else {
                     layer.close(loading);

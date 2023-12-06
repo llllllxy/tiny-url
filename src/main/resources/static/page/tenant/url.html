@@ -1,0 +1,58 @@
+<style>
+    .layui-form-item .layui-input-company {width: auto;padding-right: 10px;line-height: 38px;}
+</style>
+<div class="layuimini-container layuimini-page-anim">
+    <div class="layuimini-main">
+
+        <form class="layui-form layuimini-form" action="" lay-filter="edit-form" id="edit-form">
+            <div class="layui-form-item label-super-wide">
+                <label class="layui-form-label required">smtp服务器地址</label>
+                <div class="layui-input-block">
+                    <input type="text" name="smtpAddress" lay-verify="required|domain" lay-reqtext="smtp服务器地址不能为空"  placeholder="请输入smtp服务器地址" class="layui-input" autocomplete="off">
+                </div>
+            </div>
+            <div class="layui-form-item label-super-wide">
+                <label class="layui-form-label required">smtp端口</label>
+                <div class="layui-input-block">
+                    <input type="number" name="smtpPort" lay-verify="required" placeholder="请输入smtp端口" class="layui-input" autocomplete="off">
+                </div>
+            </div>
+            <div class="layui-form-item label-super-wide">
+                <label class="layui-form-label required">发件邮箱地址</label>
+                <div class="layui-input-block">
+                    <input type="email" name="emailAccount" lay-reqtext="请输入正确的发件邮箱账号" lay-verify="required|email" placeholder="请输入发件邮箱地址" class="layui-input" autocomplete="off">
+                </div>
+            </div>
+            <div class="layui-form-item label-super-wide">
+                <label class="layui-form-label required">发件邮箱密码</label>
+                <div class="layui-input-block">
+                    <input type="password" lay-affix="eye" name="emailPassword" lay-reqtext="发件邮箱密码不能为空" lay-verify="required" placeholder="请输入发件邮箱密码" class="layui-input" autocomplete="off">
+                </div>
+            </div>
+            <div class="layui-form-item label-super-wide">
+                <label class="layui-form-label required">收件邮箱地址</label>
+                <div class="layui-input-block">
+                    <input type="text" name="receiveEmail" lay-reqtext="请输入正确的收件邮箱账号" lay-verify="required" placeholder="请输入收件邮箱地址" class="layui-input" autocomplete="off">
+                </div>
+            </div>
+            <div class="layui-form-item label-super-wide">
+                <div class="layui-input-block">
+                    <button class="layui-btn" lay-submit lay-filter="saveBtn">确认保存</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<script>
+    layui.use(['form','miniPage'], function () {
+        var form = layui.form,
+            layer = layui.layer,
+            miniPage = layui.miniPage;
+
+        /**
+         * 初始化表单，要加上，不然刷新部分组件可能会不加载
+         */
+        form.render();
+
+    });
+</script>

@@ -11,6 +11,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
+import org.tinycloud.tinyurl.common.config.ApplicationConfig;
 import org.tinycloud.tinyurl.common.constant.GlobalConstant;
 import org.tinycloud.tinyurl.common.enums.TenantErrorCode;
 import org.tinycloud.tinyurl.common.exception.TenantException;
@@ -32,6 +33,9 @@ public class TenantAuthInterceptor implements HandlerInterceptor {
 
     @Autowired
     private StringRedisTemplate redisTemplate;
+
+    @Autowired
+    private ApplicationConfig applicationConfig;
 
     /*
      * 进入controller层之前拦截请求
@@ -70,7 +74,7 @@ public class TenantAuthInterceptor implements HandlerInterceptor {
             throw new TenantException(TenantErrorCode.TENANT_NOT_LOGIN);
         }
         // 刷新会话缓存时长
-        redisTemplate.expire(GlobalConstant.TENANT_TOKEN_REDIS_KEY + token, 1800, TimeUnit.SECONDS);
+        redisTemplate.expire(GlobalConstant.TENANT_TOKEN_REDIS_KEY + token, applicationConfig.getTenantAuthTimeout(), TimeUnit.SECONDS);
 
         TenantHolder.setTenant(tenantInfo);
 
