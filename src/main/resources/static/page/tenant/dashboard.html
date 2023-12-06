@@ -7,11 +7,11 @@
     .welcome .layuimini-qiuck-module {text-align:center;margin-top:10px}
     .welcome .layuimini-qiuck-module a i {display:inline-block;width:100%;height:60px;line-height:60px;text-align:center;border-radius:2px;font-size:30px;background-color:#F8F8F8;color:#333;transition:all .3s;-webkit-transition:all .3s;}
     .welcome .layuimini-qiuck-module a cite {position:relative;top:2px;display:block;color:#666;text-overflow:ellipsis;overflow:hidden;white-space:nowrap;font-size:14px;}
-    .welcome .welcome-module {width:100%;height:210px;}
+    .welcome .welcome-module {width:100%;}
     .welcome .panel {background-color:#fff;border:1px solid transparent;border-radius:3px;-webkit-box-shadow:0 1px 1px rgba(0,0,0,.05);box-shadow:0 1px 1px rgba(0,0,0,.05)}
     .welcome .panel-body {padding:10px}
     .welcome .panel-title {margin-top:0;margin-bottom:0;font-size:12px;color:inherit}
-    .welcome .label {display:inline;padding:.2em .6em .3em;font-size:75%;font-weight:700;line-height:1;color:#fff;text-align:center;white-space:nowrap;vertical-align:baseline;border-radius:.25em;margin-top:.3em;}
+    .welcome .label {display:inline;padding:.5em .6em .3em;font-size:75%;font-weight:700;line-height:1;color:#fff;text-align:center;white-space:nowrap;vertical-align:baseline;border-radius:.25em;margin-top:.3em;}
     .welcome .layui-red {color:red}
     .welcome .main_btn > p {height:40px;}
     .welcome .layui-bg-number {background-color:#F8F8F8;}
@@ -21,63 +21,63 @@
         <div class="layui-row layui-col-space15">
             <div class="layui-col-md12">
                 <div class="layui-row layui-col-space15">
-                    <div class="layui-col-md6">
+                    <div class="layui-col-md12">
                         <div class="layui-card">
                             <div class="layui-card-header"><i class="fa fa-warning icon"></i>基础数据</div>
                             <div class="layui-card-body">
                                 <div class="welcome-module">
                                     <div class="layui-row layui-col-space10">
-                                        <div class="layui-col-xs6">
+                                        <div class="layui-col-xs3">
                                             <div class="panel layui-bg-number">
                                                 <div class="panel-body">
                                                     <div class="panel-title">
                                                         <span class="label pull-right layui-bg-blue">实时</span>
-                                                        <h5>项目数量</h5>
+                                                        <h5>总链接数</h5>
                                                     </div>
                                                     <div class="panel-content">
-                                                        <h1 class="no-margins" id="projectQuantity">1234</h1>
+                                                        <h1 class="no-margins" id="urlQuantity">1234</h1>
                                                         <small>当前分类总记录数</small>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="layui-col-xs6">
+                                        <div class="layui-col-xs3">
                                             <div class="panel layui-bg-number">
                                                 <div class="panel-body">
                                                     <div class="panel-title">
                                                         <span class="label pull-right layui-bg-cyan">实时</span>
-                                                        <h5>主机数量</h5>
+                                                        <h5>总访问量</h5>
                                                     </div>
                                                     <div class="panel-content">
-                                                        <h1 class="no-margins" id="hostQuantity">1234</h1>
+                                                        <h1 class="no-margins" id="accessQuantity">1234</h1>
                                                         <small>当前分类总记录数</small>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="layui-col-xs6">
+                                        <div class="layui-col-xs3">
                                             <div class="panel layui-bg-number">
                                                 <div class="panel-body">
                                                     <div class="panel-title">
                                                         <span class="label pull-right layui-bg-orange">实时</span>
-                                                        <h5>任务数量</h5>
+                                                        <h5>今日访问量</h5>
                                                     </div>
                                                     <div class="panel-content">
-                                                        <h1 class="no-margins" id="jobQuantity">1234</h1>
+                                                        <h1 class="no-margins" id="todayQuantity">1234</h1>
                                                         <small>当前分类总记录数</small>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="layui-col-xs6">
+                                        <div class="layui-col-xs3">
                                             <div class="panel layui-bg-number">
                                                 <div class="panel-body">
                                                     <div class="panel-title">
                                                         <span class="label pull-right layui-bg-green">实时</span>
-                                                        <h5>运行中任务数量</h5>
+                                                        <h5>今日独立IP数</h5>
                                                     </div>
                                                     <div class="panel-content">
-                                                        <h1 class="no-margins" id="jobEnableQuantity">1234</h1>
+                                                        <h1 class="no-margins" id="todayIpQuantity">1234</h1>
                                                         <small>当前分类总记录数</small>
                                                     </div>
                                                 </div>
@@ -90,65 +90,26 @@
                     </div>
                     <div class="layui-col-md6">
                         <div class="layui-card">
-                            <div class="layui-card-header"><i class="fa fa-warning icon"></i>运行数据</div>
+                            <div class="layui-card-header"><i class="fa fa-line-chart icon"></i>七日访问量条形图</div>
                             <div class="layui-card-body">
-                                <div class="welcome-module">
-                                    <div class="layui-row layui-col-space10">
-                                        <div class="layui-col-xs6">
-                                            <div class="panel layui-bg-number">
-                                                <div class="panel-body">
-                                                    <div class="panel-title">
-                                                        <span class="label pull-right layui-bg-blue">实时</span>
-                                                        <h5>总执行次数</h5>
-                                                    </div>
-                                                    <div class="panel-content">
-                                                        <h1 class="no-margins" id="logQuantity">1234</h1>
-                                                        <small>当前分类总记录数</small>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="layui-col-xs6">
-                                            <div class="panel layui-bg-number">
-                                                <div class="panel-body">
-                                                    <div class="panel-title">
-                                                        <span class="label pull-right layui-bg-cyan">实时</span>
-                                                        <h5>成功次数</h5>
-                                                    </div>
-                                                    <div class="panel-content">
-                                                        <h1 class="no-margins" id="successfulQuantity">1234</h1>
-                                                        <small>当前分类总记录数</small>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="layui-col-xs6">
-                                            <div class="panel layui-bg-number">
-                                                <div class="panel-body">
-                                                    <div class="panel-title">
-                                                        <span class="label pull-right layui-bg-orange">实时</span>
-                                                        <h5>失败次数</h5>
-                                                    </div>
-                                                    <div class="panel-content">
-                                                        <h1 class="no-margins" id="failedQuantity">1234</h1>
-                                                        <small>当前分类总记录数</small>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="layui-col-xs6">
-
-                                        </div>
-                                    </div>
-                                </div>
+                                <div id="echarts-1" style="width: 100%;min-height: 380px"></div>
                             </div>
                         </div>
                     </div>
+                    <div class="layui-col-md6">
+                        <div class="layui-card">
+                            <div class="layui-card-header"><i class="fa fa-line-chart icon"></i>七日访问量趋势图</div>
+                            <div class="layui-card-body">
+                                <div id="echarts-2" style="width: 100%;min-height: 380px"></div>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="layui-col-md12">
                         <div class="layui-card">
-                            <div class="layui-card-header"><i class="fa fa-line-chart icon"></i>报表统计</div>
+                            <div class="layui-card-header"><i class="fa fa-line-chart icon"></i>今日访问量Top25</div>
                             <div class="layui-card-body">
-                                <div id="echarts-records" style="width: 100%;min-height:400px"></div>
+                                <table class="layui-hide" id="test" lay-filter="test"></table>
                             </div>
                         </div>
                     </div>
@@ -186,7 +147,7 @@
         /**
          * echarts报表功能
          */
-        var echartsRecords = echarts.init(document.getElementById('echarts-records'), 'walden');
+        var echartsRecords = echarts.init(document.getElementById('echarts-1'), 'walden');
         AjaxUtil.get({
             url: '/welcome/chartsInfo',
             success: function (res) {

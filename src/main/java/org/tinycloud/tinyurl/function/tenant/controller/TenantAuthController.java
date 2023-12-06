@@ -54,13 +54,13 @@ public class TenantAuthController {
 
         Map<String, String> menuItem2 = new HashMap<>();
         menuItem2.put("title", "访问日志");
-        menuItem2.put("href", "page/tenant/hosts.html");
+        menuItem2.put("href", "page/tenant/accesslog.html");
         menuItem2.put("icon", "fa fa-navicon");
         menuItem2.put("target", "_self");
 
         Map<String, String> menuItem3 = new HashMap<>();
         menuItem3.put("title", "数据统计");
-        menuItem3.put("href", "page/tenant/jobinfo.html");
+        menuItem3.put("href", "page/tenant/statistic.html");
         menuItem3.put("icon", "fa fa-navicon");
         menuItem3.put("target", "_self");
 
@@ -71,10 +71,10 @@ public class TenantAuthController {
 
         Map<String, String> homeInfo = new HashMap<>();
         homeInfo.put("title", "首页");
-        homeInfo.put("href", "page/tenant/welcome-1.html?t=1");
+        homeInfo.put("href", "page/tenant/dashboard.html");
 
         Map<String, String> logoInfo = new HashMap<>();
-        logoInfo.put("title", "任务调度中心");
+        logoInfo.put("title", "租户控制台");
         logoInfo.put("image", "/images/logo.png");
         logoInfo.put("href", "");
 
