@@ -1,3 +1,16 @@
+# 项目相关配置
+tinyurl:
+  # 名称
+  name: tiny-url
+  # 版本
+  version: 1.0.0
+  # 数据库类型
+  db-type: mysql
+  # 会话控制(时间类的单位都是秒)
+  tenant-auth-timeout: 1800
+  admin-auth-timeout: 1800
+
+
 server:
   port: 9999
   servlet:
