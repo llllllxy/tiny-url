@@ -15,6 +15,10 @@
     background-color: #ffffff
 }
 
+.layuimini-table {
+    margin-top: 10px;
+}
+
 .layui-breadcrumb > * {
     font-size: 13px !important;
 }
