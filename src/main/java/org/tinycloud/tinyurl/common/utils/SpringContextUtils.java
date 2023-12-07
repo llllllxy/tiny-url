@@ -43,8 +43,9 @@ public class SpringContextUtils implements ApplicationContextAware, DisposableBe
     /**
      * 从静态变量ApplicationContext中取得Bean, 自动转型为所赋值对象的类型.
      */
-    public static Object getBean(String name) {
-        return getApplicationContext().getBean(name);
+    @SuppressWarnings("unchecked")
+    public static <T> T  getBean(String name) {
+        return (T) getApplicationContext().getBean(name);
     }
 
     /**
