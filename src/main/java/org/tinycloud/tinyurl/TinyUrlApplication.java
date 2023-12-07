@@ -8,7 +8,7 @@ import org.springframework.core.env.Environment;
 import org.tinycloud.tinyurl.common.utils.LocalHostUtils;
 
 @Slf4j
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = {"org.tinycloud.tinyurl"})
 public class TinyUrlApplication {
 
     public static void main(String[] args) {
