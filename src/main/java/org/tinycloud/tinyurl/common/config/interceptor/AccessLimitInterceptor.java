@@ -39,14 +39,14 @@ public class AccessLimitInterceptor implements HandlerInterceptor {
             String options = HttpMethod.OPTIONS.toString();
             if (options.equals(request.getMethod())) {
                 response.setStatus(HttpServletResponse.SC_OK);
-                return true;
+                return HandlerInterceptor.super.preHandle(request, response, handler);
             }
 
             HandlerMethod handlerMethod = (HandlerMethod) handler;
             AccessLimit accessLimit = handlerMethod.getMethodAnnotation(AccessLimit.class);
             // 接口上没有注解，说明这个接口不做限制
             if (accessLimit == null) {
-                return true;
+                return HandlerInterceptor.super.preHandle(request, response, handler);
             }
             int seconds = accessLimit.seconds();
             int maxCount = accessLimit.maxCount();
@@ -71,6 +71,6 @@ public class AccessLimitInterceptor implements HandlerInterceptor {
                 }
             }
         }
-        return true;
+        return HandlerInterceptor.super.preHandle(request, response, handler);
     }
 }
