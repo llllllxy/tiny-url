@@ -1,11 +1,13 @@
 package org.tinycloud.tinyurl.function.tenant.service;
 
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.tinycloud.tinyurl.common.config.ApplicationConfig;
+import org.tinycloud.tinyurl.common.config.interceptor.TenantAuthUtil;
 import org.tinycloud.tinyurl.common.constant.GlobalConstant;
 import org.tinycloud.tinyurl.common.enums.TenantErrorCode;
 import org.tinycloud.tinyurl.common.exception.TenantException;
@@ -114,5 +116,11 @@ public class TenantAuthService {
         return token;
     }
 
+
+    public Boolean logout(HttpServletRequest request) {
+        String token = TenantAuthUtil.getToken(request);
+        this.stringRedisTemplate.delete(GlobalConstant.TENANT_TOKEN_REDIS_KEY + token);
+        return true;
+    }
 
 }

@@ -1,5 +1,6 @@
 package org.tinycloud.tinyurl.function.tenant.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -41,6 +42,10 @@ public class TenantAuthController {
         return ApiResult.success(tenantAuthService.login(dto), "登录成功，欢迎回来！");
     }
 
+    @GetMapping("/logout")
+    public ApiResult<Boolean> logout(HttpServletRequest request) {
+        return ApiResult.success(tenantAuthService.logout(request), "退出登录成功！");
+    }
 
     @GetMapping("/initMenu")
     public ApiResult<?> initMenu() {
