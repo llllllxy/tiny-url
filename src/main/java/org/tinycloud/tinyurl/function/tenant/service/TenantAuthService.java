@@ -101,10 +101,7 @@ public class TenantAuthService {
         if (StrUtils.isEmpty(passwordDecrypt)) {
             throw new TenantException(TenantErrorCode.CAPTCHA_IS_MISMATCH);
         }
-        log.info("login passwordDecrypt = " + passwordDecrypt);
-
         String passwordDecryptHash = SM3Utils.hash(passwordDecrypt);
-        log.info("login passwordDecryptHash = " + passwordDecryptHash);
         if (!entity.getTenantPassword().equals(passwordDecryptHash)) {
             throw new TenantException(TenantErrorCode.TENANT_USERNAME_OR_PASSWORD_MISMATCH);
         }
