@@ -380,7 +380,7 @@ a:hover, a:focus {
 }
 
 #Menu .layui-nav .layui-this::after, #Menu .layui-nav-bar, #Menu .layui-nav-tree .layui-nav-itemed::after {
-    background-color: #31833e;
+    background-color: #5E7CE0;
 }
 
 #mMenu {
