@@ -40,17 +40,25 @@ spring:
       add-mappings: false
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
-    url: jdbc:mysql://127.0.0.1:3306/tiny-url?useUnicode=true&characterEncoding=utf8&serverTimezone=GMT%2B8&zeroDateTimeBehavior=convertToNull&useSSL=true
-    driverClassName: com.mysql.cj.jdbc.Driver
-    username: root
-    password: 123654
-    hikari:
-      connection-timeout: 30000
-      idle-timeout: 30000
-      max-lifetime: 1800000
-      maximum-pool-size: 15
-      minimum-idle: 10
-      connection-test-query: SELECT 1
+    dynamic:
+      # 设置默认的数据源或者数据源组（默认 master）
+      primary: master
+      # 严格匹配数据源（true 未匹配到指定数据源时抛异常；false 使用默认数据源；默认 false）
+      strict: false
+      datasource:
+        # 主库配置（可配多个，构成多主）
+        master:
+          url: jdbc:mysql://127.0.0.1:3306/tiny-url?useUnicode=true&characterEncoding=utf8&serverTimezone=GMT%2B8&zeroDateTimeBehavior=convertToNull&useSSL=true
+          username: root
+          password: 123654
+          driver-class-name: com.mysql.cj.jdbc.Driver
+      hikari:
+        connection-timeout: 30000
+        idle-timeout: 30000
+        max-lifetime: 1800000
+        maximum-pool-size: 15
+        minimum-idle: 10
+        connection-test-query: SELECT 1
 
   data:
     # Redis配置
