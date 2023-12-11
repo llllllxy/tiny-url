@@ -7,8 +7,10 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import org.tinycloud.tinyurl.common.model.ApiResult;
+import org.tinycloud.tinyurl.function.tenant.bean.dto.TenantEditDto;
 import org.tinycloud.tinyurl.function.tenant.bean.dto.TenantLoginDto;
 import org.tinycloud.tinyurl.function.tenant.bean.vo.TenantCaptchaCodeVo;
+import org.tinycloud.tinyurl.function.tenant.bean.vo.TenantInfoVo;
 import org.tinycloud.tinyurl.function.tenant.service.TenantAuthService;
 
 import java.util.*;
@@ -35,7 +37,6 @@ public class TenantAuthController {
     public ApiResult<TenantCaptchaCodeVo> getCode() {
         return ApiResult.success(tenantAuthService.getCode(), "获取验证码成功");
     }
-
 
     @PostMapping("/login")
     public ApiResult<String> login(@Validated @RequestBody TenantLoginDto dto) {
@@ -90,4 +91,18 @@ public class TenantAuthController {
         return ApiResult.success(initInfo, "获取成功");
     }
 
+    @GetMapping("/getTenantInfo")
+    public ApiResult<TenantInfoVo> getTenantInfo() {
+        return ApiResult.success(tenantAuthService.getTenantInfo(), "获取租户信息成功，欢迎回来！");
+    }
+
+    @PostMapping("/editTenantInfo")
+    public ApiResult<Boolean> editTenantInfo(@Validated @RequestBody TenantEditDto dto) {
+        return ApiResult.success(tenantAuthService.editTenantInfo(dto), "修改租户信息成功，欢迎回来！");
+    }
+
+    @GetMapping("/getAkInfo")
+    public ApiResult<TenantInfoVo> getAkInfo() {
+        return ApiResult.success(tenantAuthService.getAkInfo(), "获取租户密钥成功，欢迎回来！");
+    }
 }

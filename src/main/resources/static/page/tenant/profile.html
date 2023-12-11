@@ -1,0 +1,87 @@
+<style>
+</style>
+<div class="layuimini-container layuimini-page-anim">
+    <div class="layuimini-main">
+        <form class="layui-form layuimini-form" action="" lay-filter="edit-form" id="edit-form">
+            <div class="layui-form-item">
+                <label class="layui-form-label required">账号</label>
+                <div class="layui-input-block">
+                    <input type="text" name="tenantAccount" value="admin" class="layui-input" readonly disabled>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">租户名称</label>
+                <div class="layui-input-block">
+                    <input type="text" name="tenantName" placeholder="请输入租户名称" class="layui-input" autocomplete="off">
+                    <tip>自定义名称，不超过64个字符。</tip>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">手机号</label>
+                <div class="layui-input-block">
+                    <input type="number" name="tenantPhone" lay-reqtext="请输入正确的手机号" lay-verify="phone" placeholder="请输入手机号"
+                           class="layui-input" autocomplete="off">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">电子邮箱</label>
+                <div class="layui-input-block">
+                    <input type="email" name="tenantEmail" lay-reqtext="请输入正确的电子邮箱" lay-verify="email" placeholder="请输入电子邮箱"
+                           class="layui-input" autocomplete="off">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-input-block">
+                    <button class="layui-btn" lay-submit lay-filter="saveBtn">确认保存</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<script>
+    layui.use(['form', 'miniPage'], function () {
+        var form = layui.form,
+            layer = layui.layer,
+            miniPage = layui.miniPage;
+
+        /**
+         * 初始化表单，要加上，不然刷新部分组件可能会不加载
+         */
+        form.render();
+
+        AjaxUtil.get({
+            url: '/tenant/auth/getTenantInfo',
+            success: function (res) {
+                if (res.code == '0') {
+                    form.val('edit-form', res.data);
+                } else {
+                    layer.msg(res.msg, {time: 1000, icon: 2});
+                }
+            }
+        });
+
+        //监听提交
+        form.on('submit(saveBtn)', function (data) {
+            layer.confirm('确定要修改租户信息吗', {
+                title: '提示'
+            }, function (index) {
+                miniAjax.postJSON({
+                    url: '/tenant/auth/editTenantInfo',
+                    data: JSON.stringify(data.field),
+                    success: function (res) {
+                        if (res.code == '0') {
+                            layer.msg(res.msg, {time: 1000, icon: 1}, function () {
+                                layer.close(index);
+                                miniPage.hashHome();
+                            });
+                        } else {
+                            layer.msg(res.msg, {time: 1000, icon: 2});
+                        }
+                    }
+                });
+            });
+            return false;
+        });
+
+    });
+</script>

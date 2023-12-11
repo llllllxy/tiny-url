@@ -1,5 +1,6 @@
 package org.tinycloud.tinyurl.function.tenant.service;
 
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
@@ -8,22 +9,21 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.tinycloud.tinyurl.common.config.ApplicationConfig;
 import org.tinycloud.tinyurl.common.config.interceptor.TenantAuthUtil;
+import org.tinycloud.tinyurl.common.config.interceptor.TenantHolder;
 import org.tinycloud.tinyurl.common.constant.GlobalConstant;
 import org.tinycloud.tinyurl.common.enums.TenantErrorCode;
 import org.tinycloud.tinyurl.common.exception.TenantException;
-import org.tinycloud.tinyurl.common.utils.CaptchaCodeGen;
-import org.tinycloud.tinyurl.common.utils.JsonUtils;
-import org.tinycloud.tinyurl.common.utils.StrUtils;
+import org.tinycloud.tinyurl.common.utils.*;
 import org.tinycloud.tinyurl.common.utils.cipher.SM2Utils;
 import org.tinycloud.tinyurl.common.utils.cipher.SM3Utils;
+import org.tinycloud.tinyurl.function.tenant.bean.dto.TenantEditDto;
 import org.tinycloud.tinyurl.function.tenant.bean.dto.TenantLoginDto;
 import org.tinycloud.tinyurl.function.tenant.bean.entity.TTenant;
 import org.tinycloud.tinyurl.function.tenant.bean.vo.TenantCaptchaCodeVo;
+import org.tinycloud.tinyurl.function.tenant.bean.vo.TenantInfoVo;
 import org.tinycloud.tinyurl.function.tenant.mapper.TenantMapper;
 
-import java.util.Map;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -121,6 +121,58 @@ public class TenantAuthService {
         String token = TenantAuthUtil.getToken(request);
         this.stringRedisTemplate.delete(GlobalConstant.TENANT_TOKEN_REDIS_KEY + token);
         return true;
+    }
+
+    public TenantInfoVo getTenantInfo() {
+        Long tenantId = TenantHolder.getTenantId();
+        TTenant entity = this.tenantMapper.selectOne(
+                Wrappers.<TTenant>lambdaQuery().eq(TTenant::getId, tenantId)
+                        .eq(TTenant::getDelFlag, GlobalConstant.NOT_DELETED));
+        TenantInfoVo tenantInfoVo = BeanConvertUtils.convertTo(entity, TenantInfoVo::new);
+        return tenantInfoVo;
+    }
+
+    public Boolean editTenantInfo(TenantEditDto dto) {
+        Long tenantId = TenantHolder.getTenantId();
+        LambdaUpdateWrapper<TTenant> wrapper = new LambdaUpdateWrapper<>();
+        wrapper.eq(TTenant::getId, tenantId);
+        wrapper.set(TTenant::getTenantName, dto.getTenantName());
+        wrapper.set(TTenant::getTenantPhone, dto.getTenantPhone());
+        wrapper.set(TTenant::getTenantEmail, dto.getTenantEmail());
+        int rows = this.tenantMapper.update(wrapper);
+        return rows > 0;
+    }
+
+    public TenantInfoVo getAkInfo() {
+        Long tenantId = TenantHolder.getTenantId();
+        TTenant entity = this.tenantMapper.selectOne(
+                Wrappers.<TTenant>lambdaQuery().eq(TTenant::getId, tenantId)
+                        .eq(TTenant::getDelFlag, GlobalConstant.NOT_DELETED));
+        if (StrUtils.isBlank(entity.getAccessKey())) {
+            String accessKey = KeyGenUtils.generateAk();
+            String accessKeySecret = KeyGenUtils.generateSk();
+            Date currentDate = new Date();
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTimeZone(TimeZone.getDefault());
+            calendar.setTime(currentDate);
+            // 默认设置过期时间为3个月后
+            calendar.add(Calendar.MONTH, 3);
+            Date expireTime = calendar.getTime();
+
+            LambdaUpdateWrapper<TTenant> wrapper = new LambdaUpdateWrapper<>();
+            wrapper.eq(TTenant::getId, tenantId);
+            wrapper.set(TTenant::getAccessKey, accessKey);
+            wrapper.set(TTenant::getAccessKeySecret, accessKeySecret);
+            wrapper.set(TTenant::getExpireTime, expireTime);
+            int rows = this.tenantMapper.update(wrapper);
+
+            entity.setAccessKey(accessKey);
+            entity.setAccessKeySecret(accessKeySecret);
+            entity.setExpireTime(expireTime);
+        }
+
+        TenantInfoVo tenantInfoVo = BeanConvertUtils.convertTo(entity, TenantInfoVo::new);
+        return tenantInfoVo;
     }
 
 }
