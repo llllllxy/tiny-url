@@ -1,0 +1,104 @@
+<style>
+</style>
+<div class="layuimini-container layuimini-page-anim">
+    <div class="layuimini-main">
+        <form class="layui-form layuimini-form" action="" lay-filter="edit-form" id="edit-form">
+            <div class="layui-form-item label-super-wide">
+                <label class="layui-form-label">ak</label>
+                <div class="layui-input-block">
+                    <div class="layui-form-mid" id="accessKey" style="word-break: break-all"></div>
+                </div>
+            </div>
+            <div class="layui-form-item label-super-wide">
+                <label class="layui-form-label">sk</label>
+                <div class="layui-input-block">
+                    <div class="layui-form-mid" id="accessKeySecret" style="word-break: break-all"></div>
+                </div>
+            </div>
+            <div class="layui-form-item label-super-wide">
+                <label class="layui-form-label required">是否开启IP校验</label>
+                <div class="layui-input-block">
+                    <input type="checkbox" name="checkIpFlag" value="1" lay-skin="switch" lay-filter="switchFlag" title="打开|关闭">
+                </div>
+            </div>
+            <div class="layui-form-item label-super-wide">
+                <label class="layui-form-label">IP白名单</label>
+                <div class="layui-input-block">
+                    <input type="text" name="ipWhitelist" lay-reqtext="请输入正确的IP白名单" lay-verify="phone" placeholder="请输入IP白名单"
+                           class="layui-input" autocomplete="off">
+                    <tip>可一次性输入多个ip地址，每个ip地址使用英文逗号,分割。</tip>
+                </div>
+            </div>
+            <div class="layui-btn-container" style="margin-top: 10px;margin-left: 25px;">
+                <div class="layui-input-block">
+                    <button type="button" class="layui-btn" lay-on="reset">重置密钥</button>
+                    <button type="submit" class="layui-btn" lay-submit lay-filter="saveBtn">确认保存</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<script>
+    layui.use(['form', 'miniPage', 'util'], function () {
+        var form = layui.form,
+            layer = layui.layer,
+            util = layui.util,
+            miniPage = layui.miniPage;
+
+        util.on('lay-on', {
+            reset: function () {
+                console.log('触发reset');
+            },
+        });
+
+        // 指定开关事件
+        form.on('switch(switchFlag)', function(data) {
+            layer.msg('开关 checked：'+ (this.checked ? 'true' : 'false'), {
+                offset: '6px'
+            });
+        });
+
+        AjaxUtil.get({
+            url: '/tenant/auth/getAkInfo',
+            success: function (res) {
+                if (res.code == '0') {
+                    form.val('edit-form', res.data);
+                    $('#accessKey').text(res.data.accessKey);
+                    $('#accessKeySecret').text(res.data.accessKeySecret);
+                    if (res.data.checkIpFlag === 1) {
+                        $("[name='checkIpFlag']").prop('checked', true);
+                    } else {
+                        $("[name='checkIpFlag']").prop('checked', false);
+                    }
+                    form.render();
+                } else {
+                    layer.msg(res.msg, {time: 1000, icon: 2});
+                }
+            }
+        });
+
+        //监听提交
+        form.on('submit(saveBtn)', function (data) {
+            layer.confirm('确定要修改租户信息吗', {
+                title: '提示'
+            }, function (index) {
+                AjaxUtil.postJSON({
+                    url: '/tenant/auth/editTenantInfo',
+                    data: JSON.stringify(data.field),
+                    success: function (res) {
+                        if (res.code == '0') {
+                            layer.msg(res.msg, {time: 1000, icon: 1}, function () {
+                                layer.close(index);
+                                miniPage.hashHome();
+                            });
+                        } else {
+                            layer.msg(res.msg, {time: 1000, icon: 2});
+                        }
+                    }
+                });
+            });
+            return false;
+        });
+
+    });
+</script>
