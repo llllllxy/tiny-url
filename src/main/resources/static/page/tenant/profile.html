@@ -10,9 +10,9 @@
                 </div>
             </div>
             <div class="layui-form-item">
-                <label class="layui-form-label">租户名称</label>
+                <label class="layui-form-label required">租户名称</label>
                 <div class="layui-input-block">
-                    <input type="text" name="tenantName" placeholder="请输入租户名称" class="layui-input" autocomplete="off">
+                    <input type="text" name="tenantName" placeholder="请输入租户名称" class="layui-input" autocomplete="off" lay-verify="required">
                     <tip>自定义名称，不超过64个字符。</tip>
                 </div>
             </div>
@@ -24,9 +24,9 @@
                 </div>
             </div>
             <div class="layui-form-item">
-                <label class="layui-form-label">电子邮箱</label>
+                <label class="layui-form-label required">电子邮箱</label>
                 <div class="layui-input-block">
-                    <input type="email" name="tenantEmail" lay-reqtext="请输入正确的电子邮箱" lay-verify="email" placeholder="请输入电子邮箱"
+                    <input type="email" name="tenantEmail" lay-reqtext="请输入正确的电子邮箱" lay-verify="required|email" placeholder="请输入电子邮箱"
                            class="layui-input" autocomplete="off">
                 </div>
             </div>
@@ -65,7 +65,7 @@
             layer.confirm('确定要修改租户信息吗', {
                 title: '提示'
             }, function (index) {
-                miniAjax.postJSON({
+                AjaxUtil.postJSON({
                     url: '/tenant/auth/editTenantInfo',
                     data: JSON.stringify(data.field),
                     success: function (res) {

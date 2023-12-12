@@ -116,7 +116,6 @@ public class TenantAuthService {
         return token;
     }
 
-
     public Boolean logout(HttpServletRequest request) {
         String token = TenantAuthUtil.getToken(request);
         this.stringRedisTemplate.delete(GlobalConstant.TENANT_TOKEN_REDIS_KEY + token);

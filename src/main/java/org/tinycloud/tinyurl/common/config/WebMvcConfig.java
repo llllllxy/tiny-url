@@ -42,6 +42,10 @@ public class WebMvcConfig implements WebMvcConfigurer {
             add("/tenant/auth/logout");
             add("/tenant/auth/getInfo");
             add("/tenant/auth/initMenu");
+            add("/tenant/auth/getTenantInfo");
+            add("/tenant/auth/editTenantInfo");
+            add("/tenant/auth/getAkInfo");
+
 
             add("/tenant/tenant/**"); // 租户信息管理
             add("/tenant/url/**"); // 租户url短链管理
