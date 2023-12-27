@@ -56,7 +56,7 @@
         <dependency>
             <groupId>com.baomidou</groupId>
             <artifactId>mybatis-plus-spring-boot3-starter</artifactId>
-            <version>3.5.4.1</version>
+            <version>3.5.5</version>
         </dependency>
         <!-- Dynamic Datasource -->
         <dependency>
