@@ -2,12 +2,15 @@ package org.tinycloud.tinyurl.function.tenant.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
 import org.tinycloud.tinyurl.common.annotation.AccessLimit;
 import org.tinycloud.tinyurl.common.model.ApiResult;
+import org.tinycloud.tinyurl.common.model.PageModel;
+import org.tinycloud.tinyurl.function.tenant.bean.dto.TenantLoginDto;
+import org.tinycloud.tinyurl.function.tenant.bean.dto.TenantUrlQueryDto;
 import org.tinycloud.tinyurl.function.tenant.bean.entity.TUrlMap;
+import org.tinycloud.tinyurl.function.tenant.bean.vo.TenantUrlVo;
 import org.tinycloud.tinyurl.function.tenant.mapper.UrlMapMapper;
 import org.tinycloud.tinyurl.function.tenant.service.UrlMapService;
 
@@ -25,6 +28,26 @@ public class UrlMapController {
 
     @Autowired
     private UrlMapService urlMapService;
+
+    @PostMapping("/query")
+    public ApiResult<PageModel<TenantUrlVo>> query(@Validated @RequestBody TenantUrlQueryDto dto) {
+        return ApiResult.success(urlMapService.query(dto), "查询成功！");
+    }
+
+    @GetMapping(value = "/del")
+    public ApiResult<Boolean> del(@RequestParam(value = "id") Long id) {
+        return ApiResult.success(urlMapService.del(id), "删除成功！");
+    }
+
+    @GetMapping(value = "/enable")
+    public ApiResult<Boolean> enable(@RequestParam(value = "id") Long id) {
+        return ApiResult.success(urlMapService.enable(id), "启用成功！");
+    }
+
+    @GetMapping(value = "/disable")
+    public ApiResult<Boolean> disable(@RequestParam(value = "id") Long id) {
+        return ApiResult.success(urlMapService.disable(id), "停用成功！");
+    }
 
 
     @GetMapping("/insert")

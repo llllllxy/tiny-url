@@ -125,7 +125,7 @@
             echarts = layui.echarts;
 
         AjaxUtil.get({
-            url: '/welcome/quantity',
+            url: '/tenant/dashboard/quantity',
             success: function (res) {
                 if (res.code == '0') {
                     // 刷新数据
@@ -149,7 +149,7 @@
          */
         var echartsRecords = echarts.init(document.getElementById('echarts-1'), 'walden');
         AjaxUtil.get({
-            url: '/welcome/chartsInfo',
+            url: '/tenant/dashboard/chartsInfo',
             success: function (res) {
                 if (res.code == '0') {
                     // 刷新数据

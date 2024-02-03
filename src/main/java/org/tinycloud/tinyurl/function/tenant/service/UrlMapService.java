@@ -1,20 +1,33 @@
 package org.tinycloud.tinyurl.function.tenant.service;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.google.common.hash.BloomFilter;
 import com.google.common.hash.Funnels;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
+import org.tinycloud.tinyurl.common.config.interceptor.TenantHolder;
 import org.tinycloud.tinyurl.common.constant.GlobalConstant;
+import org.tinycloud.tinyurl.common.enums.TenantErrorCode;
+import org.tinycloud.tinyurl.common.exception.TenantException;
+import org.tinycloud.tinyurl.common.model.PageModel;
 import org.tinycloud.tinyurl.common.utils.*;
 import org.tinycloud.tinyurl.common.utils.web.UserAgentUtils;
+import org.tinycloud.tinyurl.function.tenant.bean.dto.TenantUrlQueryDto;
 import org.tinycloud.tinyurl.function.tenant.bean.entity.TUrlAccessLog;
 import org.tinycloud.tinyurl.function.tenant.bean.entity.TUrlMap;
+import org.tinycloud.tinyurl.function.tenant.bean.vo.TenantUrlVo;
 import org.tinycloud.tinyurl.function.tenant.mapper.UrlAccessLogMapper;
 import org.tinycloud.tinyurl.function.tenant.mapper.UrlMapMapper;
 
@@ -22,6 +35,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -143,7 +157,7 @@ public class UrlMapService {
     /**
      * 更新访问次数，插入访问日志
      *
-     * @param surl 短链
+     * @param entity 短链信息
      */
     public void updateUrlVisits(HttpServletRequest request, TUrlMap entity) {
         // 获取ip这一行不能放在异步执行
@@ -164,5 +178,81 @@ public class UrlMapService {
             urlAccessLog.setAccessTime(new Date());
             this.urlAccessLogMapper.insert(urlAccessLog);
         });
+    }
+
+
+    public PageModel<TenantUrlVo> query(TenantUrlQueryDto dto) {
+        PageModel<TenantUrlVo> responsePage = new PageModel<>(dto.getPageNo(), dto.getPageSize());
+        LambdaQueryWrapper<TUrlMap> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(TUrlMap::getDelFlag, GlobalConstant.NOT_DELETED);
+        queryWrapper.eq(TUrlMap::getTenantId, TenantHolder.getTenantId());
+        queryWrapper.eq(Objects.nonNull(dto.getStatus()), TUrlMap::getStatus, dto.getStatus());
+        queryWrapper.like(StringUtils.hasLength(dto.getSurl()), TUrlMap::getSurl, dto.getSurl());
+        queryWrapper.like(StringUtils.hasLength(dto.getCreatedAt()), TUrlMap::getCreatedAt, dto.getCreatedAt());
+        queryWrapper.orderByDesc(TUrlMap::getCreatedAt);
+        Page<TUrlMap> urlMapPage = this.urlMapMapper.selectPage(Page.of(dto.getPageNo(), dto.getPageSize()), queryWrapper);
+
+        if (urlMapPage != null && !CollectionUtils.isEmpty(urlMapPage.getRecords())) {
+            responsePage.setTotalPage(urlMapPage.getPages());
+            responsePage.setTotalCount(urlMapPage.getTotal());
+            responsePage.setRecords(urlMapPage.getRecords().stream().map(x -> {
+                TenantUrlVo vo = new TenantUrlVo();
+                BeanUtils.copyProperties(x, vo);
+                return vo;
+            }).collect(Collectors.toList()));
+        }
+        return responsePage;
+    }
+
+    public Boolean del(Long id) {
+        TUrlMap urlInfo = this.urlMapMapper.selectOne(Wrappers.<TUrlMap>lambdaQuery()
+                .eq(TUrlMap::getDelFlag, GlobalConstant.NOT_DELETED)
+                .eq(TUrlMap::getId, id));
+        if (Objects.isNull(urlInfo)) {
+            throw new TenantException(TenantErrorCode.TENANT_URL_NOT_EXIST);
+        }
+        // 逻辑删除
+        LambdaUpdateWrapper<TUrlMap> wrapper = new LambdaUpdateWrapper<>();
+        wrapper.eq(TUrlMap::getId, id);
+        wrapper.set(TUrlMap::getDelFlag, GlobalConstant.DELETED);
+        wrapper.set(TUrlMap::getTenantId, TenantHolder.getTenantId());
+        int rows = this.urlMapMapper.update(null, wrapper);
+        return rows > 0;
+    }
+
+    public Boolean enable(Long id) {
+        TUrlMap urlInfo = this.urlMapMapper.selectOne(Wrappers.<TUrlMap>lambdaQuery()
+                .eq(TUrlMap::getDelFlag, GlobalConstant.NOT_DELETED)
+                .eq(TUrlMap::getId, id));
+        if (Objects.isNull(urlInfo)) {
+            throw new TenantException(TenantErrorCode.TENANT_URL_NOT_EXIST);
+        }
+        if (urlInfo.getStatus().equals(GlobalConstant.ENABLED)) {
+            throw new TenantException(TenantErrorCode.TENANT_URL_IS_ENABLE);
+        }
+        LambdaUpdateWrapper<TUrlMap> wrapper = new LambdaUpdateWrapper<>();
+        wrapper.eq(TUrlMap::getId, id);
+        wrapper.set(TUrlMap::getStatus, GlobalConstant.ENABLED);
+        wrapper.set(TUrlMap::getTenantId, TenantHolder.getTenantId());
+        int rows = this.urlMapMapper.update(null, wrapper);
+        return rows > 0;
+    }
+
+    public Boolean disable(Long id) {
+        TUrlMap urlInfo = this.urlMapMapper.selectOne(Wrappers.<TUrlMap>lambdaQuery()
+                .eq(TUrlMap::getDelFlag, GlobalConstant.NOT_DELETED)
+                .eq(TUrlMap::getId, id));
+        if (Objects.isNull(urlInfo)) {
+            throw new TenantException(TenantErrorCode.TENANT_URL_NOT_EXIST);
+        }
+        if (urlInfo.getStatus().equals(GlobalConstant.DISABLED)) {
+            throw new TenantException(TenantErrorCode.TENANT_URL_IS_DISABLE);
+        }
+        LambdaUpdateWrapper<TUrlMap> wrapper = new LambdaUpdateWrapper<>();
+        wrapper.eq(TUrlMap::getId, id);
+        wrapper.set(TUrlMap::getStatus, GlobalConstant.DISABLED);
+        wrapper.set(TUrlMap::getTenantId, TenantHolder.getTenantId());
+        int rows = this.urlMapMapper.update(null, wrapper);
+        return rows > 0;
     }
 }
