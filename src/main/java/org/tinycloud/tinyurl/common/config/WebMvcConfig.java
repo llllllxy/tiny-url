@@ -45,6 +45,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
             add("/tenant/auth/getTenantInfo");
             add("/tenant/auth/editTenantInfo");
             add("/tenant/auth/getAkInfo");
+            add("/tenant/auth/resetAkInfo");
 
 
             add("/tenant/tenant/**"); // 租户信息管理

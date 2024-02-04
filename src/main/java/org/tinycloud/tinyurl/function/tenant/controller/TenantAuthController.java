@@ -98,11 +98,16 @@ public class TenantAuthController {
 
     @PostMapping("/editTenantInfo")
     public ApiResult<Boolean> editTenantInfo(@Validated @RequestBody TenantEditDto dto) {
-        return ApiResult.success(tenantAuthService.editTenantInfo(dto), "修改租户信息成功，欢迎回来！");
+        return ApiResult.success(tenantAuthService.editTenantInfo(dto), "修改租户信息成功！");
     }
 
     @GetMapping("/getAkInfo")
     public ApiResult<TenantInfoVo> getAkInfo() {
-        return ApiResult.success(tenantAuthService.getAkInfo(), "获取租户密钥成功，欢迎回来！");
+        return ApiResult.success(tenantAuthService.getAkInfo(), "获取租户密钥成功！");
+    }
+
+    @GetMapping("/resetAkInfo")
+    public ApiResult<TenantInfoVo> resetAkInfo() {
+        return ApiResult.success(tenantAuthService.resetAkInfo(), "重置租户密钥成功！");
     }
 }

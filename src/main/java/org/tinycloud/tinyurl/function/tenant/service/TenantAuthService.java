@@ -147,6 +147,7 @@ public class TenantAuthService {
         TTenant entity = this.tenantMapper.selectOne(
                 Wrappers.<TTenant>lambdaQuery().eq(TTenant::getId, tenantId)
                         .eq(TTenant::getDelFlag, GlobalConstant.NOT_DELETED));
+        // 如果没有，就现生成一个，有效期为半个月
         if (StrUtils.isBlank(entity.getAccessKey())) {
             String accessKey = KeyGenUtils.generateAk();
             String accessKeySecret = KeyGenUtils.generateSk();
@@ -174,4 +175,28 @@ public class TenantAuthService {
         return tenantInfoVo;
     }
 
+
+    public TenantInfoVo resetAkInfo() {
+        String accessKey = KeyGenUtils.generateAk();
+        String accessKeySecret = KeyGenUtils.generateSk();
+        Date currentDate = new Date();
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeZone(TimeZone.getDefault());
+        calendar.setTime(currentDate);
+        // 默认设置过期时间为3个月后
+        calendar.add(Calendar.MONTH, 3);
+        Date expireTime = calendar.getTime();
+
+        LambdaUpdateWrapper<TTenant> wrapper = new LambdaUpdateWrapper<>();
+        wrapper.eq(TTenant::getId, TenantHolder.getTenantId());
+        wrapper.set(TTenant::getAccessKey, accessKey);
+        wrapper.set(TTenant::getAccessKeySecret, accessKeySecret);
+        wrapper.set(TTenant::getExpireTime, expireTime);
+        int rows = this.tenantMapper.update(wrapper);
+        TenantInfoVo tenantInfoVo = new TenantInfoVo();
+        tenantInfoVo.setAccessKey(accessKey);
+        tenantInfoVo.setAccessKeySecret(accessKeySecret);
+        tenantInfoVo.setExpireTime(expireTime);
+        return tenantInfoVo;
+    }
 }
