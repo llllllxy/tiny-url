@@ -7,6 +7,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import org.tinycloud.tinyurl.common.model.ApiResult;
+import org.tinycloud.tinyurl.function.tenant.bean.dto.IpSettingDto;
 import org.tinycloud.tinyurl.function.tenant.bean.dto.TenantEditDto;
 import org.tinycloud.tinyurl.function.tenant.bean.dto.TenantLoginDto;
 import org.tinycloud.tinyurl.function.tenant.bean.vo.TenantCaptchaCodeVo;
@@ -109,5 +110,10 @@ public class TenantAuthController {
     @GetMapping("/resetAkInfo")
     public ApiResult<TenantInfoVo> resetAkInfo() {
         return ApiResult.success(tenantAuthService.resetAkInfo(), "重置租户密钥成功！");
+    }
+
+    @PostMapping("/editIpSetting")
+    public ApiResult<Boolean> editIpSetting(@Validated @RequestBody IpSettingDto dto) {
+        return ApiResult.success(tenantAuthService.editIpSetting(dto), "修改配置信息成功！");
     }
 }

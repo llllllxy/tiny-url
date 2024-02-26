@@ -16,6 +16,7 @@ import org.tinycloud.tinyurl.common.exception.TenantException;
 import org.tinycloud.tinyurl.common.utils.*;
 import org.tinycloud.tinyurl.common.utils.cipher.SM2Utils;
 import org.tinycloud.tinyurl.common.utils.cipher.SM3Utils;
+import org.tinycloud.tinyurl.function.tenant.bean.dto.IpSettingDto;
 import org.tinycloud.tinyurl.function.tenant.bean.dto.TenantEditDto;
 import org.tinycloud.tinyurl.function.tenant.bean.dto.TenantLoginDto;
 import org.tinycloud.tinyurl.function.tenant.bean.entity.TTenant;
@@ -36,6 +37,9 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 @Service
 public class TenantAuthService {
+
+    private static final String expireTimeString = "2099-12-31 23:59:59";
+    private static final String expireTimePattern = "yyyy-MM-dd HH:mm:ss";
 
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
@@ -151,14 +155,8 @@ public class TenantAuthService {
         if (StrUtils.isBlank(entity.getAccessKey())) {
             String accessKey = KeyGenUtils.generateAk();
             String accessKeySecret = KeyGenUtils.generateSk();
-            Date currentDate = new Date();
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTimeZone(TimeZone.getDefault());
-            calendar.setTime(currentDate);
-            // 默认设置过期时间为3个月后
-            calendar.add(Calendar.MONTH, 3);
-            Date expireTime = calendar.getTime();
 
+            Date expireTime = DateUtils.parse(expireTimeString, expireTimePattern);
             LambdaUpdateWrapper<TTenant> wrapper = new LambdaUpdateWrapper<>();
             wrapper.eq(TTenant::getId, tenantId);
             wrapper.set(TTenant::getAccessKey, accessKey);
@@ -179,14 +177,8 @@ public class TenantAuthService {
     public TenantInfoVo resetAkInfo() {
         String accessKey = KeyGenUtils.generateAk();
         String accessKeySecret = KeyGenUtils.generateSk();
-        Date currentDate = new Date();
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeZone(TimeZone.getDefault());
-        calendar.setTime(currentDate);
-        // 默认设置过期时间为3个月后
-        calendar.add(Calendar.MONTH, 3);
-        Date expireTime = calendar.getTime();
 
+        Date expireTime = DateUtils.parse(expireTimeString, expireTimePattern);
         LambdaUpdateWrapper<TTenant> wrapper = new LambdaUpdateWrapper<>();
         wrapper.eq(TTenant::getId, TenantHolder.getTenantId());
         wrapper.set(TTenant::getAccessKey, accessKey);
@@ -198,5 +190,15 @@ public class TenantAuthService {
         tenantInfoVo.setAccessKeySecret(accessKeySecret);
         tenantInfoVo.setExpireTime(expireTime);
         return tenantInfoVo;
+    }
+
+    public Boolean editIpSetting(IpSettingDto dto) {
+        LambdaUpdateWrapper<TTenant> wrapper = new LambdaUpdateWrapper<>();
+        wrapper.eq(TTenant::getId, TenantHolder.getTenantId());
+        wrapper.set(TTenant::getCheckIpFlag, dto.getCheckIpFlag());
+        wrapper.set(TTenant::getIpWhitelist, dto.getIpWhitelist());
+        int rows = this.tenantMapper.update(wrapper);
+
+        return true;
     }
 }
