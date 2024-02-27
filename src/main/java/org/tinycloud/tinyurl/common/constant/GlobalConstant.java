@@ -64,6 +64,11 @@ public class GlobalConstant {
     /**
      * 租户token key
      */
+    public static final String TENANT_RESTFUL_TOKEN_KEY = "token";
+
+    /**
+     * 租户token key
+     */
     public static final String TENANT_TOKEN_KEY = "tenant_token";
 
 }

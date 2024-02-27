@@ -15,7 +15,7 @@ import org.tinycloud.tinyurl.common.model.ApiResult;
  * @since 2023-12-04 12:44
  */
 @RestController
-@RequestMapping("/api/url")
+@RequestMapping("/api/url/v1")
 public class ApiUrlController {
 
     @GetMapping("/test")

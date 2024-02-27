@@ -15,6 +15,10 @@ public enum RestfulErrorCode {
     TENANT_IS_DISABLED("4004", "租户已被禁用，请检查！"),
     SIGNATURE_CHECK_FAILED("4005", "签名验签失败，请检查！"),
     IP_IS_NOT_IN_WHITELIST("4006", "源IP不在白名单内，禁止访问！"),
+
+
+    TOKEN_CAN_NOT_BE_NULL("4100", "token不能为空，禁止访问！"),
+    RESTFUL_IS_NOT_LOGIN("4101", "会话已过期，请重新登录！"),
     ;
 
     private String code;

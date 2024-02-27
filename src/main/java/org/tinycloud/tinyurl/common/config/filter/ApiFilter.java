@@ -17,13 +17,21 @@ import org.springframework.util.PathMatcher;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.servlet.HandlerExceptionResolver;
+import org.tinycloud.tinyurl.common.constant.GlobalConstant;
+import org.tinycloud.tinyurl.common.enums.RestfulErrorCode;
+import org.tinycloud.tinyurl.common.exception.RestfulException;
+import org.tinycloud.tinyurl.common.utils.JsonUtils;
+import org.tinycloud.tinyurl.common.utils.StrUtils;
+import org.tinycloud.tinyurl.function.tenant.bean.entity.TTenant;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 /**
  * <p>
- *     rest服务开放接口鉴权过滤器
+ * rest服务开放接口鉴权过滤器
  * </p>
  *
  * @author liuxingyu01
@@ -46,9 +54,38 @@ public class ApiFilter extends OncePerRequestFilter implements Ordered {
         if (log.isInfoEnabled()) {
             log.info("ApiFilter -- doFilterInternal -- start = {}", request.getRequestURI());
         }
+        try {
+            String token = request.getHeader(GlobalConstant.TENANT_RESTFUL_TOKEN_KEY);
+            if (StrUtils.isBlank(token)) {
+                handlerExceptionResolver.resolveException(request, response, null, new RestfulException(RestfulErrorCode.TOKEN_CAN_NOT_BE_NULL));
+                return;
+            }
+            // 再判断token是否存在
+            String tenantInfoString = stringRedisTemplate.opsForValue().get(GlobalConstant.TENANT_RESTFUL_TOKEN_REDIS_KEY + token);
+            if (StrUtils.isBlank(tenantInfoString)) {
+                handlerExceptionResolver.resolveException(request, response, null, new RestfulException(RestfulErrorCode.RESTFUL_IS_NOT_LOGIN));
+                return;
+            }
 
-        // 进行过滤操作
-        chain.doFilter(request, response);
+            // 再判断token是否合法
+            TTenant tenantInfo = JsonUtils.readValue(tenantInfoString, TTenant.class);
+            if (log.isInfoEnabled()) {
+                log.info("ApiFilter -- tenantInfo = {}", tenantInfo);
+            }
+            if (Objects.isNull(tenantInfo)) {
+                handlerExceptionResolver.resolveException(request, response, null, new RestfulException(RestfulErrorCode.RESTFUL_IS_NOT_LOGIN));
+                return;
+            }
+            // 刷新会话缓存时长
+            stringRedisTemplate.expire(GlobalConstant.TENANT_RESTFUL_TOKEN_REDIS_KEY + token, 1800, TimeUnit.SECONDS);
+
+            ApiFilterHolder.setTenant(tenantInfo);
+            // 进行过滤操作
+            chain.doFilter(request, response);
+        } finally {
+            // ThreadLocal用完一定要remove
+            ApiFilterHolder.clearTenant();
+        }
     }
 
     @Override

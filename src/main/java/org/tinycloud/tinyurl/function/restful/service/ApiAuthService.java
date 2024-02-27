@@ -9,6 +9,7 @@ import org.tinycloud.tinyurl.common.constant.GlobalConstant;
 import org.tinycloud.tinyurl.common.enums.RestfulErrorCode;
 import org.tinycloud.tinyurl.common.exception.RestfulException;
 import org.tinycloud.tinyurl.common.utils.IpGetUtils;
+import org.tinycloud.tinyurl.common.utils.JsonUtils;
 import org.tinycloud.tinyurl.common.utils.StrUtils;
 import org.tinycloud.tinyurl.common.utils.cipher.SM3Utils;
 import org.tinycloud.tinyurl.function.restful.bean.dto.AuthenticationDto;
@@ -97,8 +98,9 @@ public class ApiAuthService {
 
         String token = "tinyurl_" + UUID.randomUUID().toString().replace("-", "");
         // 缓存redis里60秒，表示有效期
+        entity.setTenantPassword(null);
         this.stringRedisTemplate.opsForValue().set(GlobalConstant.TENANT_RESTFUL_TOKEN_REDIS_KEY + token,
-                authCode, 1800, TimeUnit.SECONDS);
+                JsonUtils.toJsonString(entity), 1800, TimeUnit.SECONDS);
         return token;
     }
 }

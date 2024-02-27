@@ -37,7 +37,7 @@ public class ApiAuthController {
         return ApiResult.success(apiAuthService.signature(dto));
     }
 
-    @GetMapping("/signature")
+    @GetMapping("/authentication")
     public ApiResult<String> authentication(@Validated @RequestBody AuthenticationDto dto, HttpServletRequest request) {
         return ApiResult.success(apiAuthService.authentication(dto, request));
     }
