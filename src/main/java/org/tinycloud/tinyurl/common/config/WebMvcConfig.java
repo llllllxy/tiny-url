@@ -51,7 +51,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
             add("/tenant/tenant/**"); // 租户信息管理
             add("/tenant/url/**"); // 租户url短链管理
-            add("/tenant/log/**"); // 租户短链访问日志管理
+            add("/tenant/accessLog/**"); // 租户短链访问日志管理
             add("/tenant/dashboard/**"); // 租户仪表盘
             add("/tenant/statistic/**"); // 租户数据统计管理
         }};
