@@ -3,10 +3,7 @@ package org.tinycloud.tinyurl.function.restful.controller;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.tinycloud.tinyurl.common.model.ApiResult;
 import org.tinycloud.tinyurl.function.restful.bean.dto.AuthenticationDto;
 import org.tinycloud.tinyurl.function.restful.bean.dto.SignatureDto;
@@ -32,12 +29,12 @@ public class ApiAuthController {
         return ApiResult.success(apiAuthService.authCode());
     }
 
-    @GetMapping("/signature")
+    @PostMapping("/signature")
     public ApiResult<String> signature(@Validated @RequestBody SignatureDto dto) {
         return ApiResult.success(apiAuthService.signature(dto));
     }
 
-    @GetMapping("/authentication")
+    @PostMapping("/authentication")
     public ApiResult<String> authentication(@Validated @RequestBody AuthenticationDto dto, HttpServletRequest request) {
         return ApiResult.success(apiAuthService.authentication(dto, request));
     }

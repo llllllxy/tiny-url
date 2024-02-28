@@ -117,7 +117,7 @@ public class ApiFilter extends OncePerRequestFilter implements Ordered {
      * @return true匹配成功，反则反之
      */
     private boolean matchPath(List<String> configPaths, String requestPath) {
-        if (CollectionUtils.isEmpty(configPaths) || !StrUtils.isBlank(requestPath)) {
+        if (CollectionUtils.isEmpty(configPaths) || StrUtils.isBlank(requestPath)) {
             return false;
         }
         PathMatcher pathMatcher = new AntPathMatcher();
