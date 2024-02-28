@@ -20,6 +20,7 @@ import org.springframework.web.servlet.HandlerExceptionResolver;
 import org.tinycloud.tinyurl.common.constant.GlobalConstant;
 import org.tinycloud.tinyurl.common.enums.RestfulErrorCode;
 import org.tinycloud.tinyurl.common.exception.RestfulException;
+import org.tinycloud.tinyurl.common.utils.IpGetUtils;
 import org.tinycloud.tinyurl.common.utils.JsonUtils;
 import org.tinycloud.tinyurl.common.utils.StrUtils;
 import org.tinycloud.tinyurl.function.tenant.bean.entity.TTenant;
@@ -76,6 +77,19 @@ public class ApiFilter extends OncePerRequestFilter implements Ordered {
                 handlerExceptionResolver.resolveException(request, response, null, new RestfulException(RestfulErrorCode.RESTFUL_IS_NOT_LOGIN));
                 return;
             }
+
+            // 白名单校验
+            Integer checkIpFlag = tenantInfo.getCheckIpFlag();
+            if (checkIpFlag == 1) {
+                String ipWhitelist = tenantInfo.getIpWhitelist();
+                if (StrUtils.isNotBlank(ipWhitelist)) {
+                    if (!ipWhitelist.contains(IpGetUtils.getIpAddr(request))) {
+                        handlerExceptionResolver.resolveException(request, response, null, new RestfulException(RestfulErrorCode.IP_IS_NOT_IN_WHITELIST));
+                        return;
+                    }
+                }
+            }
+
             // 刷新会话缓存时长
             stringRedisTemplate.expire(GlobalConstant.TENANT_RESTFUL_TOKEN_REDIS_KEY + token, 1800, TimeUnit.SECONDS);
 

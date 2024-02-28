@@ -2,7 +2,6 @@ package org.tinycloud.tinyurl.function.restful.controller;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.tinycloud.tinyurl.common.model.ApiResult;
 
@@ -19,8 +18,7 @@ import org.tinycloud.tinyurl.common.model.ApiResult;
 public class ApiUrlController {
 
     @GetMapping("/test")
-    @ResponseBody
     public ApiResult<?> test() {
-        return ApiResult.success("测试调用成功: ");
+        return ApiResult.success("测试调用成功");
     }
 }
