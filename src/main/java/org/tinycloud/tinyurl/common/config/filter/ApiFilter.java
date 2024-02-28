@@ -14,7 +14,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.PathMatcher;
-import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 import org.tinycloud.tinyurl.common.constant.GlobalConstant;
@@ -118,7 +117,7 @@ public class ApiFilter extends OncePerRequestFilter implements Ordered {
      * @return true匹配成功，反则反之
      */
     private boolean matchPath(List<String> configPaths, String requestPath) {
-        if (CollectionUtils.isEmpty(configPaths) || !StringUtils.hasText(requestPath)) {
+        if (CollectionUtils.isEmpty(configPaths) || !StrUtils.isBlank(requestPath)) {
             return false;
         }
         PathMatcher pathMatcher = new AntPathMatcher();
