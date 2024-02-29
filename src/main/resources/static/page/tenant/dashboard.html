@@ -63,7 +63,7 @@
                                                         <h5>今日访问量</h5>
                                                     </div>
                                                     <div class="panel-content">
-                                                        <h1 class="no-margins" id="todayQuantity">1234</h1>
+                                                        <h1 class="no-margins" id="todayAccessQuantity">1234</h1>
                                                         <small>当前分类总记录数</small>
                                                     </div>
                                                 </div>
@@ -119,7 +119,7 @@
     </div>
 </div>
 <script>
-    layui.use(['layer','echarts'], function () {
+    layui.use(['layer', 'echarts'], function () {
         var $ = layui.jquery,
             layer = layui.layer,
             echarts = layui.echarts;
@@ -129,14 +129,10 @@
             success: function (res) {
                 if (res.code == '0') {
                     // 刷新数据
-                    $("#projectQuantity").text(res.data.projectQuantity);
-                    $("#hostQuantity").text(res.data.hostQuantity);
-                    $("#jobQuantity").text(res.data.jobQuantity);
-                    $("#jobEnableQuantity").text(res.data.jobEnableQuantity);
-
-                    $("#logQuantity").text(res.data.logQuantity);
-                    $("#successfulQuantity").text(res.data.successfulQuantity);
-                    $("#failedQuantity").text(res.data.failedQuantity);
+                    $("#urlQuantity").text(res.data.urlQuantity);
+                    $("#accessQuantity").text(res.data.accessQuantity);
+                    $("#todayAccessQuantity").text(res.data.todayAccessQuantity);
+                    $("#todayIpQuantity").text(res.data.todayIpQuantity);
                 } else {
                     layer.msg(res.msg, {time: 1000, icon: 2});
                 }
