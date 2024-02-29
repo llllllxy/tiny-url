@@ -23,7 +23,9 @@ public class DateUtils {
 
     public static final String DATE_PATTERN = "yyyy-MM-dd";
 
-    public static final String TIME_PATTERN = "yyyy-MM-dd HH:mm:ss";
+    public static final String TIME_PATTERN = "HH:mm:ss";
+
+    public static final String DATE_TIME_PATTERN = "yyyy-MM-dd HH:mm:ss";
 
     /**
      * 获取当前日期 默认得时间格式 yyyy-MM-dd
@@ -54,7 +56,7 @@ public class DateUtils {
      */
     public static String now() {
         Date dt = new Date();
-        SimpleDateFormat sdf = new SimpleDateFormat(TIME_PATTERN);
+        SimpleDateFormat sdf = new SimpleDateFormat(DATE_TIME_PATTERN);
         return sdf.format(dt);
     }
 
@@ -65,6 +67,30 @@ public class DateUtils {
      * @return String 时间字符串
      */
     public static String now(String format) {
+        Date dt = new Date();
+        SimpleDateFormat sdf = new SimpleDateFormat(format);
+        String date = sdf.format(dt);
+        return date;
+    }
+
+    /**
+     * 获取当前时间 默认得时间格式 HH:mm:ss
+     *
+     * @return 时间字符串
+     */
+    public static String time() {
+        Date dt = new Date();
+        SimpleDateFormat sdf = new SimpleDateFormat(TIME_PATTERN);
+        return sdf.format(dt);
+    }
+
+    /**
+     * 获取当前时间 比如 DateTool.getCurrentTime("HH:mm:ss"); 返回值为 23:44:20
+     *
+     * @param format 格式
+     * @return String 时间字符串
+     */
+    public static String time(String format) {
         Date dt = new Date();
         SimpleDateFormat sdf = new SimpleDateFormat(format);
         String date = sdf.format(dt);
@@ -152,9 +178,9 @@ public class DateUtils {
      */
     public static int timeDiff(String time1, String time2) {
         try {
-            SimpleDateFormat sdf1 = new SimpleDateFormat(TIME_PATTERN);
+            SimpleDateFormat sdf1 = new SimpleDateFormat(DATE_TIME_PATTERN);
             Date date1 = sdf1.parse(time1);
-            SimpleDateFormat sdf2 = new SimpleDateFormat(TIME_PATTERN);
+            SimpleDateFormat sdf2 = new SimpleDateFormat(DATE_TIME_PATTERN);
             Date date2 = sdf2.parse(time2);
             return Long.valueOf(date2.getTime() - date1.getTime()).intValue() / 1000;
         } catch (Exception e) {
@@ -249,7 +275,7 @@ public class DateUtils {
      * @return long
      */
     public static long dateToStamp(String dateTime1) {
-        SimpleDateFormat dateTimeFormatter = new SimpleDateFormat(TIME_PATTERN);
+        SimpleDateFormat dateTimeFormatter = new SimpleDateFormat(DATE_TIME_PATTERN);
         try {
             Date dateTime11 = dateTimeFormatter.parse(dateTime1);
             long mil = dateTime11.getTime() / 1000;
@@ -267,7 +293,7 @@ public class DateUtils {
      */
     public static String stampToDate(long sed) {
         String res;
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(TIME_PATTERN);
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(DATE_TIME_PATTERN);
         long lt = sed * 1000;
         Date date = new Date(lt);
         res = simpleDateFormat.format(date);
@@ -281,7 +307,7 @@ public class DateUtils {
      * @return yyyy-MM-dd HH:mm:ss
      */
     public static String getLaterTime(String time, int later) {
-        SimpleDateFormat sdf = new SimpleDateFormat(TIME_PATTERN);
+        SimpleDateFormat sdf = new SimpleDateFormat(DATE_TIME_PATTERN);
         try {
             Date date = sdf.parse(time);
             Calendar Cal = Calendar.getInstance();
@@ -301,7 +327,7 @@ public class DateUtils {
      * @return yyyy-MM-dd HH:mm:ss
      */
     public static String getLaterTime(int later) {
-        SimpleDateFormat sdf = new SimpleDateFormat(TIME_PATTERN);
+        SimpleDateFormat sdf = new SimpleDateFormat(DATE_TIME_PATTERN);
         try {
             Calendar nowTime = Calendar.getInstance();
             nowTime.add(Calendar.SECOND, later);

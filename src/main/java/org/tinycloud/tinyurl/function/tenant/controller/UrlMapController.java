@@ -4,14 +4,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.tinycloud.tinyurl.common.annotation.AccessLimit;
 import org.tinycloud.tinyurl.common.model.ApiResult;
 import org.tinycloud.tinyurl.common.model.PageModel;
-import org.tinycloud.tinyurl.function.tenant.bean.dto.TenantLoginDto;
+import org.tinycloud.tinyurl.function.tenant.bean.dto.TenantUrlAddDto;
+import org.tinycloud.tinyurl.function.tenant.bean.dto.TenantUrlEditDto;
 import org.tinycloud.tinyurl.function.tenant.bean.dto.TenantUrlQueryDto;
-import org.tinycloud.tinyurl.function.tenant.bean.entity.TUrlMap;
 import org.tinycloud.tinyurl.function.tenant.bean.vo.TenantUrlVo;
-import org.tinycloud.tinyurl.function.tenant.mapper.UrlMapMapper;
 import org.tinycloud.tinyurl.function.tenant.service.UrlMapService;
 
 /**
@@ -49,15 +47,14 @@ public class UrlMapController {
         return ApiResult.success(urlMapService.disable(id), "停用成功！");
     }
 
+    @PostMapping("/add")
+    public ApiResult<Boolean> add(@Validated @RequestBody TenantUrlAddDto dto) {
+        return ApiResult.success(urlMapService.add(dto));
+    }
 
-    @GetMapping("/insert")
-    public ApiResult<?> insert() {
-        TUrlMap urlMap = new TUrlMap();
-        urlMap.setLurl("https://juejin.cn/post/7306192146768183311?utm_source=gold_browser_extension#heading-10");
-        urlMap.setTenantId(1L);
-        urlMap.setDelFlag(0);
-        urlMap.setStatus(0);
 
-        return ApiResult.success(urlMapService.generateAndSave(urlMap));
+    @PostMapping("/edit")
+    public ApiResult<Boolean> edit(@Validated @RequestBody TenantUrlEditDto dto) {
+        return ApiResult.success(urlMapService.edit(dto));
     }
 }

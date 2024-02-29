@@ -2,7 +2,6 @@ package org.tinycloud.tinyurl.function.tenant.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
-import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.google.common.hash.BloomFilter;
@@ -24,6 +23,8 @@ import org.tinycloud.tinyurl.common.exception.TenantException;
 import org.tinycloud.tinyurl.common.model.PageModel;
 import org.tinycloud.tinyurl.common.utils.*;
 import org.tinycloud.tinyurl.common.utils.web.UserAgentUtils;
+import org.tinycloud.tinyurl.function.tenant.bean.dto.TenantUrlAddDto;
+import org.tinycloud.tinyurl.function.tenant.bean.dto.TenantUrlEditDto;
 import org.tinycloud.tinyurl.function.tenant.bean.dto.TenantUrlQueryDto;
 import org.tinycloud.tinyurl.function.tenant.bean.entity.TUrlAccessLog;
 import org.tinycloud.tinyurl.function.tenant.bean.entity.TUrlMap;
@@ -254,5 +255,34 @@ public class UrlMapService {
         wrapper.set(TUrlMap::getTenantId, TenantHolder.getTenantId());
         int rows = this.urlMapMapper.update(null, wrapper);
         return rows > 0;
+    }
+
+    public boolean add(TenantUrlAddDto dto) {
+        TUrlMap tUrlMap = new TUrlMap();
+        tUrlMap.setTenantId(TenantHolder.getTenantId());
+        tUrlMap.setLurl(dto.getOriginalUrl());
+        tUrlMap.setDelFlag(GlobalConstant.NOT_DELETED);
+        tUrlMap.setStatus(dto.getStatus());
+        tUrlMap.setExpireTime(DateUtils.parse(dto.getExpireDate() + " " + DateUtils.time(), DateUtils.DATE_TIME_PATTERN));
+        tUrlMap.setRemark("租户生成");
+        this.generateAndSave(tUrlMap);
+        return true;
+    }
+
+    public boolean edit(TenantUrlEditDto dto) {
+        TUrlMap urlInfo = this.urlMapMapper.selectOne(Wrappers.<TUrlMap>lambdaQuery()
+                .eq(TUrlMap::getDelFlag, GlobalConstant.NOT_DELETED)
+                .eq(TUrlMap::getId, dto.getId()));
+        if (Objects.isNull(urlInfo)) {
+            throw new TenantException(TenantErrorCode.TENANT_URL_NOT_EXIST);
+        }
+        LambdaUpdateWrapper<TUrlMap> wrapper = new LambdaUpdateWrapper<>();
+        wrapper.eq(TUrlMap::getId, dto.getId());
+        wrapper.eq(TUrlMap::getTenantId, TenantHolder.getTenantId());
+        wrapper.set(TUrlMap::getExpireTime, DateUtils.parse(dto.getExpireDate() + " " + DateUtils.time(), DateUtils.DATE_TIME_PATTERN));
+        int rows = this.urlMapMapper.update(wrapper);
+        // 删除redis里的缓存
+        stringRedisTemplate.delete(GlobalConstant.URL_CACHE_REDIS_KEY + urlInfo.getSurl());
+        return true;
     }
 }
