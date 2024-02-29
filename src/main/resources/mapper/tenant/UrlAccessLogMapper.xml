@@ -1,5 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.tinycloud.tinyurl.function.tenant.mapper.UrlAccessLogMapper">
-
+    <select id="pageList" resultType="org.tinycloud.tinyurl.function.tenant.bean.vo.TenantAccessLogVo">
+        select
+                tual.id,
+                tual.access_ip,
+                tual.created_at,
+                tual.access_user_agent,
+                tual.tenant_id,
+                tual.url_id,
+                tual.access_time,
+                tual.access_address,
+                tum.surl
+        from t_url_access_log tual
+        left join t_url_map tum on tum.id = tual.url_id
+        where tual.tenant_id = #{queryDto.tenantId}
+        <if test="queryDto.surl != null and queryDto.surl != ''">
+            and tum.surl like CONCAT('%',#{queryDto.surl},'%')
+        </if>
+        <if test="queryDto.startTime != null and queryDto.startTime != ''">
+            and tual.access_time &gt;= #{queryDto.startTime}
+        </if>
+        <if test="queryDto.endTime != null and queryDto.endTime != ''">
+            and tual.access_time &lt;= #{queryDto.endTime}
+        </if>
+        <if test="queryDto.accessIp != null and queryDto.accessIp != ''">
+            and tual.access_ip = #{queryDto.accessIp}
+        </if>
+    </select>
 </mapper>
