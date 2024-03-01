@@ -9,9 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.tinycloud.tinyurl.common.model.ApiResult;
 import org.tinycloud.tinyurl.common.model.PageModel;
 import org.tinycloud.tinyurl.function.tenant.bean.dto.TenantAccessLogQueryDto;
-import org.tinycloud.tinyurl.function.tenant.bean.dto.TenantUrlQueryDto;
 import org.tinycloud.tinyurl.function.tenant.bean.vo.TenantAccessLogVo;
-import org.tinycloud.tinyurl.function.tenant.bean.vo.TenantUrlVo;
 import org.tinycloud.tinyurl.function.tenant.service.UrlAccessLogService;
 
 /**
