@@ -69,9 +69,6 @@ public class ApiFilter extends OncePerRequestFilter implements Ordered {
 
             // 再判断token是否合法
             TTenant tenantInfo = JsonUtils.readValue(tenantInfoString, TTenant.class);
-            if (log.isInfoEnabled()) {
-                log.info("ApiFilter -- tenantInfo = {}", tenantInfo);
-            }
             if (Objects.isNull(tenantInfo)) {
                 handlerExceptionResolver.resolveException(request, response, null, new RestfulException(RestfulErrorCode.RESTFUL_IS_NOT_LOGIN));
                 return;

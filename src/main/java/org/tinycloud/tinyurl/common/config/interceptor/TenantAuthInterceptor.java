@@ -53,9 +53,6 @@ public class TenantAuthInterceptor implements HandlerInterceptor {
 
         // 先判断token是否为空
         String token = TenantAuthUtil.getToken(request);
-        if (logger.isInfoEnabled()) {
-            logger.info("TenantAuthInterceptor -- preHandle -- token = {}", token);
-        }
         if (StrUtils.isBlank(token)) {
             throw new TenantException(TenantErrorCode.TENANT_NOT_LOGIN);
         }
@@ -67,9 +64,6 @@ public class TenantAuthInterceptor implements HandlerInterceptor {
 
         // 再判断token是否合法
         TTenant tenantInfo = JsonUtils.readValue(tenantInfoString, TTenant.class);
-        if (logger.isInfoEnabled()) {
-            logger.info("TenantAuthInterceptor -- preHandle -- tenantInfo = {}", tenantInfo);
-        }
         if (Objects.isNull(tenantInfo)) {
             throw new TenantException(TenantErrorCode.TENANT_NOT_LOGIN);
         }
@@ -88,7 +82,6 @@ public class TenantAuthInterceptor implements HandlerInterceptor {
      */
     @Override
     public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) {
-        logger.info("TenantAuthInterceptor -- postHandle -- 执行了");
     }
 
     /*
@@ -96,7 +89,6 @@ public class TenantAuthInterceptor implements HandlerInterceptor {
      */
     @Override
     public void afterCompletion(HttpServletRequest arg0, HttpServletResponse arg1, Object arg2, Exception arg3) throws Exception {
-        logger.info("TenantAuthInterceptor -- afterCompletion -- 执行了");
         TenantHolder.clearTenant();
     }
 
