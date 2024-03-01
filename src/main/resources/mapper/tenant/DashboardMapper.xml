@@ -20,4 +20,46 @@
             tenant_id = #{tenantId}
           AND DATE_FORMAT(access_time, '%Y-%m-%d' ) = #{today}
     </select>
+
+    <select id="topList" resultType="java.util.Map">
+        SELECT
+            count( sc.id ) AS accessCount,
+            count( DISTINCT sc.access_ip ) AS ipCount,
+            su.surl AS surl,
+            sc.tenant_id AS tenantId,
+            max( su.created_at ) AS createdAt,
+            max( su.lurl ) AS lurl
+        FROM t_url_access_log sc
+        JOIN t_url_map su ON su.id = sc.url_id
+        WHERE
+            sc.tenant_id =  #{tenantId}
+          AND LEFT ( sc.access_time, 10 ) = #{today}
+        GROUP BY
+            sc.tenant_id,
+            sc.url_id
+            LIMIT 25
+    </select>
+
+
+    <select id="countByDateList" resultType="java.util.Map">
+        SELECT
+        dates.dateStr as dateStr,
+        COUNT(t_url_access_log.access_time) AS accessCount
+        FROM
+        (
+        <foreach collection="dayList" item="item" separator=" " index="idx" open="" close="">
+            <choose>
+                <when test="idx == dayList.size() - 1">
+                    SELECT #{item} AS dateStr
+                </when>
+                <otherwise>
+                    SELECT #{item} AS dateStr UNION ALL
+                </otherwise>
+            </choose>
+        </foreach>
+        ) AS dates
+        LEFT JOIN t_url_access_log ON DATE(t_url_access_log.access_time) = dates.dateStr AND t_url_access_log.tenant_id = #{tenantId}
+        GROUP BY dates.dateStr
+        ORDER BY dates.dateStr
+    </select>
 </mapper>

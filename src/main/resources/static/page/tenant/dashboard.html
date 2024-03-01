@@ -109,7 +109,7 @@
                         <div class="layui-card">
                             <div class="layui-card-header"><i class="fa fa-line-chart icon"></i>今日访问量Top25</div>
                             <div class="layui-card-body">
-                                <table class="layui-hide" id="test" lay-filter="test"></table>
+                                <table class="layui-hide" id="currentTableId" lay-filter="currentTableFilter"></table>
                             </div>
                         </div>
                     </div>
@@ -119,9 +119,10 @@
     </div>
 </div>
 <script>
-    layui.use(['layer', 'echarts'], function () {
+    layui.use(['layer', 'echarts', 'table'], function () {
         var $ = layui.jquery,
             layer = layui.layer,
+            table = layui.table,
             echarts = layui.echarts;
 
         AjaxUtil.get({
@@ -139,22 +140,83 @@
             }
         });
 
+        var currTable = table.render({
+            elem: '#currentTableId',
+            url: '/tenant/dashboard/topList',
+            method: 'get',
+            parseData: function (res) { //res 即为原始返回的数据
+                return {
+                    "code": res.code,
+                    "msg": res.msg,
+                    "data": res.data
+                };
+            },
+            defaultToolbar: ['filter', 'exports', 'print'],
+            cols: [[
+                {type: 'numbers', width: '5%', title: '#', align: 'center'},
+                {field: 'surl', width: '10%', title: '短链', align: 'center'},
+                {field: 'createdAt', width: '20%', title: '创建时间'},
+                {field: 'lurl', width: '45%', title: '原始链接'},
+                {field: 'accessCount', width: '10%', title: '访问量'},
+                {field: 'ipCount', width: '10%', title: '独立IP数'}
+            ]],
+            skin: 'line'
+        });
+
 
         /**
          * echarts报表功能
          */
-        var echartsRecords = echarts.init(document.getElementById('echarts-1'), 'walden');
+        var echartsRecords1 = echarts.init(document.getElementById('echarts-1'), 'walden');
+        var echartsRecords2 = echarts.init(document.getElementById('echarts-2'), 'walden');
+
         AjaxUtil.get({
             url: '/tenant/dashboard/chartsInfo',
             success: function (res) {
                 if (res.code == '0') {
+                    var dayList = res.data.dayList;
+                    var dataList = res.data.dataList;
+
                     // 刷新数据
                     var optionRecords = {
                         tooltip: {
                             trigger: 'axis'
                         },
                         legend: {
-                            data: ['执行次数', '成功次数', '失败次数']
+                            data: ['访问次数']
+                        },
+                        grid: {
+                            left: '3%',
+                            right: '4%',
+                            bottom: '3%',
+                            containLabel: true
+                        },
+                        toolbox: {
+                            feature: {
+                                saveAsImage: {}
+                            }
+                        },
+                        xAxis: {
+                            data: dayList
+                        },
+                        yAxis: {},
+                        series: [
+                            {
+                                name: '访问次数',
+                                type: 'bar',
+                                data: dataList,
+                            }
+                        ]
+                    };
+                    echartsRecords1.setOption(optionRecords);
+
+
+                    optionRecords = {
+                        tooltip: {
+                            trigger: 'axis'
+                        },
+                        legend: {
+                            data: ['访问次数']
                         },
                         grid: {
                             left: '3%',
@@ -170,30 +232,20 @@
                         xAxis: {
                             type: 'category',
                             boundaryGap: false,
-                            data: res.data.dateList
+                            data: dayList
                         },
                         yAxis: {
                             type: 'value'
                         },
                         series: [
                             {
-                                name: '执行次数',
+                                name: '访问次数',
                                 type: 'line',
-                                data: res.data.countList
+                                data: dataList
                             },
-                            {
-                                name: '成功次数',
-                                type: 'line',
-                                data: res.data.successCountList
-                            },
-                            {
-                                name: '失败次数',
-                                type: 'line',
-                                data: res.data.failedCountList
-                            }
                         ]
                     };
-                    echartsRecords.setOption(optionRecords);
+                    echartsRecords2.setOption(optionRecords);
                 } else {
                     layer.msg(res.msg, {time: 1000, icon: 2});
                 }
