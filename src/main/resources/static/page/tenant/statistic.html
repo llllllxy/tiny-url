@@ -1,0 +1,131 @@
+<div class="layuimini-container layuimini-page-anim">
+    <div class="layuimini-main">
+        <fieldset class="table-search-fieldset">
+            <legend>搜索信息</legend>
+            <div style="margin: 10px 10px 10px 10px">
+                <form class="layui-form" action="" lay-filter="search-form">
+                    <div class="layui-form-item">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">短链</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="surl" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <button type="submit" class="layui-btn" lay-submit lay-filter="data-search-btn">
+                                <i class="layui-icon layui-icon-search"></i>搜 索
+                            </button>
+                            <button type="submit" class="layui-btn layui-btn-primary" lay-submit
+                                    lay-filter="data-reset-btn">
+                                <i class="layui-icon layui-icon-refresh"></i> 重 置
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </fieldset>
+        <div class="layuimini-table">
+            <table class="layui-hide" id="currentTableId" lay-filter="currentTableFilter"></table>
+        </div>
+    </div>
+</div>
+
+<script>
+    layui.use(['form', 'table', ], function () {
+        var $ = layui.jquery,
+            form = layui.form,
+            table = layui.table;
+
+        var currTable = table.render({
+            elem: '#currentTableId',
+            url: '/tenant/statistic/query',
+            method: 'post',
+            contentType: 'application/json',
+            request: {
+                pageName: 'pageNo',
+                limitName: 'pageSize'
+            },
+            parseData: function (res) { //res 即为原始返回的数据
+                return {
+                    "code": res.code,
+                    "msg": res.msg,
+                    "count": res.data.totalCount,
+                    "data": res.data.records
+                };
+            },
+            toolbar: '#toolbarDemo',
+            defaultToolbar: ['filter', 'exports', 'print'],
+            cols: [[
+                {type: 'numbers', width: '5%', title: '序号', align: 'center'},
+                {field: 'surl', width: '5%', title: '短链', align: 'center'},
+                {field: 'createdAt', width: '10%', title: '生成时间', align: 'center'},
+                {field: 'accessTodayNumber', width: '10%', title: '今日点击量', align: 'center', templet: function (d) {
+                        return `<span class="layui-badge layui-bg-blue">${d.accessTodayNumber}</span>`;
+                    }
+                },
+                {field: 'accessTodayIpNumber', width: '10%', title: '今日独立IP数', align: 'center', templet: function (d) {
+                        return `<span class="layui-badge layui-bg-blue">${d.accessTodayIpNumber}</span>`;
+                    }
+                },
+                {field: 'accessYesterdayNumber', width: '10%', title: '昨日点击量', align: 'center', templet: function (d) {
+                        return `<span class="layui-badge layui-bg-blue">${d.accessYesterdayNumber}</span>`;
+                    }
+                },
+                {field: 'accessYesterdayIpNumber', width: '10%', title: '昨日独立IP数', align: 'center', templet: function (d) {
+                        return `<span class="layui-badge layui-bg-blue">${d.accessYesterdayIpNumber}</span>`;
+                    }
+                },
+                {field: 'accessMonthNumber', width: '10%', title: '当月点击量', align: 'center', templet: function (d) {
+                        return `<span class="layui-badge layui-bg-blue">${d.accessMonthNumber}</span>`;
+                    }
+                },
+                {field: 'accessMonthIpNumber', width: '10%', title: '当月独立IP数', align: 'center', templet: function (d) {
+                        return `<span class="layui-badge layui-bg-blue">${d.accessMonthIpNumber}</span>`;
+                    }
+                },
+                {field: 'accessTotalNumber', width: '10%', title: '总点击量', align: 'center', templet: function (d) {
+                        return `<span class="layui-badge layui-bg-blue">${d.accessTotalNumber}</span>`;
+                    }
+                },
+                {field: 'accessTotalIpNumber', width: '10%', title: '总独立IP数', align: 'center', templet: function (d) {
+                        return `<span class="layui-badge layui-bg-blue">${d.accessTotalIpNumber}</span>`;
+                    }
+                },
+            ]],
+            autoSort: false,
+            limits: [10, 15, 20, 25, 50, 100],
+            limit: 10,
+            page: true,
+            skin: 'line'
+        });
+
+
+        // 监听搜索操作
+        form.on('submit(data-search-btn)', function (data) {
+            // 执行搜索重载
+            table.reloadData('currentTableId', {
+                page: {
+                    curr: 1
+                },
+                where: data.field
+            });
+            return false;
+        });
+
+        // 监听重置操作
+        form.on('submit(data-reset-btn)', function (data) {
+            form.val("search-form", {
+                "surl": ''
+            });
+            // 执行搜索重载
+            table.reloadData('currentTableId', {
+                page: {
+                    curr: 1
+                },
+                where: form.val("search-form")
+            });
+            return false;
+        });
+
+    });
+</script>
