@@ -215,8 +215,8 @@ public class UrlMapService {
         // 逻辑删除
         LambdaUpdateWrapper<TUrlMap> wrapper = new LambdaUpdateWrapper<>();
         wrapper.eq(TUrlMap::getId, id);
+        wrapper.eq(TUrlMap::getTenantId, TenantHolder.getTenantId());
         wrapper.set(TUrlMap::getDelFlag, GlobalConstant.DELETED);
-        wrapper.set(TUrlMap::getTenantId, TenantHolder.getTenantId());
         int rows = this.urlMapMapper.update(null, wrapper);
         return rows > 0;
     }
@@ -233,8 +233,8 @@ public class UrlMapService {
         }
         LambdaUpdateWrapper<TUrlMap> wrapper = new LambdaUpdateWrapper<>();
         wrapper.eq(TUrlMap::getId, id);
+        wrapper.eq(TUrlMap::getTenantId, TenantHolder.getTenantId());
         wrapper.set(TUrlMap::getStatus, GlobalConstant.ENABLED);
-        wrapper.set(TUrlMap::getTenantId, TenantHolder.getTenantId());
         int rows = this.urlMapMapper.update(null, wrapper);
         return rows > 0;
     }
@@ -251,8 +251,8 @@ public class UrlMapService {
         }
         LambdaUpdateWrapper<TUrlMap> wrapper = new LambdaUpdateWrapper<>();
         wrapper.eq(TUrlMap::getId, id);
+        wrapper.eq(TUrlMap::getTenantId, TenantHolder.getTenantId());
         wrapper.set(TUrlMap::getStatus, GlobalConstant.DISABLED);
-        wrapper.set(TUrlMap::getTenantId, TenantHolder.getTenantId());
         int rows = this.urlMapMapper.update(null, wrapper);
         return rows > 0;
     }

@@ -1,58 +1,379 @@
-<style>
-    .layui-form-item .layui-input-company {width: auto;padding-right: 10px;line-height: 38px;}
-</style>
 <div class="layuimini-container layuimini-page-anim">
     <div class="layuimini-main">
 
-        <form class="layui-form layuimini-form" action="" lay-filter="edit-form" id="edit-form">
-            <div class="layui-form-item label-super-wide">
-                <label class="layui-form-label required">smtp服务器地址</label>
+        <fieldset class="table-search-fieldset">
+            <legend>搜索信息</legend>
+            <div style="margin: 10px 10px 10px 10px">
+                <form class="layui-form" action="" lay-filter="search-form">
+                    <div class="layui-form-item">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">短链</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="surl" id="surl" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">创建时间</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="createdAt" id="createdAt" autocomplete="off"
+                                       placeholder="yyyy-MM-dd" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">状态</label>
+                            <div class="layui-input-inline">
+                                <select name="status" id="status" lay-filter="status">
+                                    <option value="">请选择</option>
+                                    <option value="0">启用</option>
+                                    <option value="1">停用</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="layui-inline">
+                            <button type="submit" class="layui-btn" lay-submit lay-filter="data-search-btn">
+                                <i class="layui-icon layui-icon-search"></i>搜 索
+                            </button>
+                            <button type="submit" class="layui-btn layui-btn-primary" lay-submit
+                                    lay-filter="data-reset-btn">
+                                <i class="layui-icon layui-icon-refresh"></i> 重 置
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </fieldset>
+        <div class="layuimini-table">
+            <table class="layui-hide" id="currentTableId" lay-filter="currentTableFilter"></table>
+        </div>
+    </div>
+</div>
+
+<script type="text/html" id="toolbarDemo">
+    <div class="layui-btn-container">
+        <button class="layui-btn layui-btn-sm data-add-btn" lay-event="add">新增</button>
+    </div>
+</script>
+
+<script type="text/html" id="currentTableBar">
+    <a class="layui-btn layui-btn-xs data-count-edit" lay-event="edit">编辑</a>
+    <a class="layui-btn layui-btn-xs layui-btn-danger data-count-delete" lay-event="delete">删除</a>
+</script>
+
+<script type="text/html" id="switchTpl">
+    <input type="checkbox" name="urlStatus" value="{{= d.id }}" lay-skin="switch" lay-text="启用|停用"
+           lay-filter="urlStatusDemo" {{= d.status== 0 ? "checked" : "" }}>
+</script>
+
+<script type="text/html" id="addDialog">
+    <div class="layuimini-form">
+        <form class="layui-form" action="" lay-filter="add-form" id="add-form">
+            <div class="layui-form-item">
+                <label class="layui-form-label required">原始链接</label>
                 <div class="layui-input-block">
-                    <input type="text" name="smtpAddress" lay-verify="required|domain" lay-reqtext="smtp服务器地址不能为空"  placeholder="请输入smtp服务器地址" class="layui-input" autocomplete="off">
+                    <input type="text" name="originalUrl" lay-verify="required" lay-reqtext="原始链接不能为空"
+                           placeholder="请输入原始链接" value="" class="layui-input">
                 </div>
             </div>
-            <div class="layui-form-item label-super-wide">
-                <label class="layui-form-label required">smtp端口</label>
+            <div class="layui-form-item">
+                <label class="layui-form-label">过期时间</label>
                 <div class="layui-input-block">
-                    <input type="number" name="smtpPort" lay-verify="required" placeholder="请输入smtp端口" class="layui-input" autocomplete="off">
+                    <input type="text" name="expireDate" lay-verify="required" lay-reqtext="过期时间不能为空" autocomplete="off"
+                           placeholder="yyyy-MM-dd" class="layui-input">
                 </div>
             </div>
-            <div class="layui-form-item label-super-wide">
-                <label class="layui-form-label required">发件邮箱地址</label>
+            <div class="layui-form-item">
+                <label class="layui-form-label">状态</label>
                 <div class="layui-input-block">
-                    <input type="email" name="emailAccount" lay-reqtext="请输入正确的发件邮箱账号" lay-verify="required|email" placeholder="请输入发件邮箱地址" class="layui-input" autocomplete="off">
+                    <select name="status" lay-filter="status" lay-verify="required" lay-reqtext="状态不能为空">
+                        <option value="0">启用</option>
+                        <option value="1">停用</option>
+                    </select>
                 </div>
             </div>
-            <div class="layui-form-item label-super-wide">
-                <label class="layui-form-label required">发件邮箱密码</label>
+
+            <div class="layui-form-item layui-form-text">
+                <label class="layui-form-label">备注信息</label>
                 <div class="layui-input-block">
-                    <input type="password" lay-affix="eye" name="emailPassword" lay-reqtext="发件邮箱密码不能为空" lay-verify="required" placeholder="请输入发件邮箱密码" class="layui-input" autocomplete="off">
+                    <textarea name="remark" class="layui-textarea" placeholder="请输入备注信息"></textarea>
                 </div>
             </div>
-            <div class="layui-form-item label-super-wide">
-                <label class="layui-form-label required">收件邮箱地址</label>
-                <div class="layui-input-block">
-                    <input type="text" name="receiveEmail" lay-reqtext="请输入正确的收件邮箱账号" lay-verify="required" placeholder="请输入收件邮箱地址" class="layui-input" autocomplete="off">
-                </div>
-            </div>
-            <div class="layui-form-item label-super-wide">
-                <div class="layui-input-block">
-                    <button class="layui-btn" lay-submit lay-filter="saveBtn">确认保存</button>
-                </div>
+            <div class="layui-form-item text-right">
+                <button class="layui-btn" lay-submit lay-filter="addSaveBtn">保存</button>
+                <button class="layui-btn layui-btn-primary" type="button" lay-filter="closeAddDialog">取消</button>
             </div>
         </form>
     </div>
-</div>
+</script>
+
+
+<script type="text/html" id="editDialog">
+    <div class="layuimini-form">
+        <form class="layui-form" action="" lay-filter="edit-form" id="edit-form">
+            <div class="layui-form-item">
+                <label class="layui-form-label required">短链ID</label>
+                <div class="layui-input-block">
+                    <div class="layui-form-mid" name="id" style="word-break: break-all"></div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">过期时间</label>
+                <div class="layui-input-block">
+                    <input type="text" name="expireDate" lay-verify="required" lay-reqtext="过期时间不能为空" autocomplete="off"
+                           placeholder="yyyy-MM-dd" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item text-right">
+                <button class="layui-btn" lay-submit lay-filter="editSaveBtn">保存</button>
+                <button class="layui-btn layui-btn-primary" type="button" lay-filter="closeEditDialog">取消</button>
+            </div>
+        </form>
+    </div>
+</script>
+
 <script>
-    layui.use(['form','miniPage'], function () {
-        var form = layui.form,
-            layer = layui.layer,
-            miniPage = layui.miniPage;
+    layui.use(['form', 'table', 'laydate'], function () {
+        var $ = layui.jquery,
+            form = layui.form,
+            laydate = layui.laydate,
+            table = layui.table;
+
+        // 日期
+        laydate.render({
+            elem: '#createdAt'
+        });
+
+        form.render('select', 'search-form');
+
+        var currTable = table.render({
+            elem: '#currentTableId',
+            url: '/tenant/url/query',
+            method: 'post',
+            contentType: 'application/json',
+            request: {
+                pageName: 'pageNo',
+                limitName: 'pageSize'
+            },
+            parseData: function (res) { //res 即为原始返回的数据
+                return {
+                    "code": res.code,
+                    "msg": res.msg,
+                    "count": res.data.totalCount,
+                    "data": res.data.records
+                };
+            },
+            toolbar: '#toolbarDemo',
+            defaultToolbar: ['filter', 'exports', 'print'],
+            cols: [[
+                {field: 'id', width: '10%', title: 'ID', sort: true, align: 'center', fixed: 'left'},
+                {
+                    field: 'surl', width: '10%', title: '短链', templet: function (d) {
+                        return `<a href="javascript:;" lay-event="copy">${d.surl}</a>`
+                    }
+                },
+                {field: 'lurl', width: '20%', title: '原始链接'},
+                {field: 'visits', width: '10%', title: '访问次数', align: 'center'},
+                {field: 'createdAt', title: '创建时间', width: '10%'},
+                {field: 'expireTime', title: '过期时间', width: '10%'},
+                {field: 'status', title: '状态', width: '10%', align: 'center', templet: '#switchTpl'},
+                {field: 'remark', width: '10%', title: '备注信息'},
+                {title: '操作', width: '10%', toolbar: '#currentTableBar', align: "center"}
+            ]],
+            autoSort: false,
+            limits: [10, 15, 20, 25, 50, 100],
+            limit: 10,
+            page: true,
+            skin: 'line'
+        });
+
+        // 监听搜索操作
+        form.on('submit(data-search-btn)', function (data) {
+            // 执行搜索重载
+            table.reload('currentTableId', {
+                page: {
+                    curr: 1
+                },
+                where: data.field
+            });
+            return false;
+        });
+
+        // 监听重置操作
+        form.on('submit(data-reset-btn)', function (data) {
+            form.val("search-form", {
+                "surl": '',
+                "createdAt": '',
+                "status": '',
+            });
+            // 执行搜索重载
+            currTable.reload({
+                page: {
+                    curr: 1
+                },
+                where: form.val("search-form")
+            });
+            return false;
+        });
+
+        // 监听启用/停用操作
+        form.on('switch(urlStatusDemo)', function (obj) {
+            console.log(this.value + ' ：' + this.name + '：' + obj.elem.checked);
+            if (obj.elem.checked == true) {
+                AjaxUtil.get({
+                    url: '/tenant/url/enable?id=' + this.value,
+                    success: function (res) {
+                        if (res.code == '0') {
+                            layer.msg(res.msg, {time: 1000, icon: 1});
+                        } else {
+                            layer.msg(res.msg, {time: 1000, icon: 2});
+                        }
+                    }
+                });
+            } else {
+                AjaxUtil.get({
+                    url: '/tenant/url/disable?id=' + this.value,
+                    success: function (res) {
+                        if (res.code == '0') {
+                            layer.msg(res.msg, {time: 1000, icon: 1});
+                        } else {
+                            layer.msg(res.msg, {time: 1000, icon: 2});
+                        }
+                    }
+                });
+            }
+        });
 
         /**
-         * 初始化表单，要加上，不然刷新部分组件可能会不加载
+         * toolbar事件监听
          */
-        form.render();
+        table.on('toolbar(currentTableFilter)', function (obj) {
+            if (obj.event === 'add') { // 监听添加操作
+                var index = layer.open({
+                    title: '新增短链',
+                    type: 1,
+                    shade: 0.2,
+                    maxmin: true,
+                    shadeClose: false,
+                    area: '580px', // 宽度580, 高度自适应
+                    content: $('#addDialog').html(),
+                    success: function (layero, dIndex) {
+                        form.render('select', 'add-form');
+                        // 日期
+                        laydate.render({
+                            elem: layero.find("[name='expireDate']")
+                        });
+                        // 表单提交事件
+                        form.on('submit(addSaveBtn)', function (data) {
+                            AjaxUtil.postJSON({
+                                url: '/tenant/url/add',
+                                data: JSON.stringify(data.field),
+                                success: function (res) {
+                                    if (res.code == '0') {
+                                        layer.msg(res.msg, {time: 1000, icon: 1}, function () {
+                                            layer.close(dIndex);
+                                        });
+                                    } else {
+                                        layer.msg(res.msg, {time: 1000, icon: 2});
+                                    }
+                                }
+                            });
+                            return false;
+                        });
 
+                        // 监听取消按钮
+                        $("button[lay-filter='closeAddDialog']").click(function () {
+                            layer.close(dIndex);
+                            return false;
+                        });
+                    },
+                    end: function (index) {
+                        // 重载表格，刷新数据
+                        currTable.reload();
+                    }
+                });
+            }
+        });
+
+        table.on('tool(currentTableFilter)', function (obj) {
+            var lineData = obj.data;
+            if (obj.event === 'edit') {
+                var index = layer.open({
+                    title: '编辑短链',
+                    type: 1,
+                    shade: 0.2,
+                    maxmin: true,
+                    shadeClose: false,
+                    area: '580px', // 宽度580, 高度自适应
+                    content: $('#editDialog').html(),
+                    success: function (layero, dIndex) {
+                        laydate.render({
+                            elem: layero.find("[name='expireDate']"),
+                            value: lineData.expireTime.substring(0, 10)
+                        });
+                        layero.find("[name='id']").text(lineData.id);
+                        // 表单提交事件
+                        form.on('submit(editSaveBtn)', function (data) {
+                            data.field.id = lineData.id;
+                            AjaxUtil.postJSON({
+                                url: '/tenant/url/edit',
+                                data: JSON.stringify(data.field),
+                                success: function (res) {
+                                    if (res.code == '0') {
+                                        layer.msg(res.msg, {time: 1000, icon: 1}, function () {
+                                            layer.close(dIndex);
+                                        });
+                                    } else {
+                                        layer.msg(res.msg, {time: 1000, icon: 2});
+                                    }
+                                }
+                            });
+                            return false;
+                        });
+
+                        // 监听取消按钮
+                        $("button[lay-filter='closeEditDialog']").click(function () {
+                            layer.close(dIndex);
+                            return false;
+                        });
+                    },
+                    end: function (index) {
+                        // 重载表格，刷新数据
+                        currTable.reload();
+                    }
+                });
+                return false;
+            } else if (obj.event === 'delete') {
+                layer.confirm('确定删除此项目吗', function (index) {
+                    layer.close(index);
+                    AjaxUtil.get({
+                        url: '/tenant/url/del?id=' + lineData.id,
+                        success: function (res) {
+                            if (res.code == '0') {
+                                layer.msg(res.msg, {time: 1000, icon: 1}, function () {
+                                    // 重载表格，刷新数据
+                                    currTable.reload();
+                                });
+                            } else {
+                                layer.msg(res.msg, {time: 1000, icon: 2});
+                            }
+                        }
+                    });
+                });
+            } else if (obj.event === 'copy') {
+                handleClipboard(lineData.surl)
+            }
+        });
     });
+
+
+    function handleClipboard(text) {
+        const oInput = document.createElement('input');
+        oInput.value = text;
+        document.body.appendChild(oInput);
+        oInput.select(); // 选择对象
+        document.execCommand("Copy"); // 执行浏览器复制命令
+        oInput.className = 'oInput';// 设置class名
+        document.getElementsByClassName("oInput")[0].remove();// 移除这个input
+        layer.msg('已复制到粘贴板');
+    }
 </script>
