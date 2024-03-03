@@ -11,7 +11,8 @@
                         <div class="editor_content">
                             <div class="layui-tab layui-tab-brief">
                                 <ul class="layui-tab-title">
-                                    <li class="layui-this"><i class="layui-icon layui-icon-vercode"></i>服务授权</li>
+                                    <li class="layui-this"><i class="layui-icon layui-icon-vercode"></i>获取授权码</li>
+                                    <li><i class="layui-icon layui-icon-add-circle"></i>服务授权</li>
                                     <li><i class="layui-icon layui-icon-add-circle"></i>生成短链</li>
                                     <li><i class="layui-icon layui-icon-success"></i>启用短链</li>
                                     <li><i class="layui-icon layui-icon-error"></i>禁用短链</li>
@@ -21,16 +22,16 @@
                                 <div class="layui-tab-content">
                                     <div class="layui-tab-item layui-show">
                                         <p><strong>1、请求地址</strong></p>
-                                        <p>http://192.168.0.105:8076/api/getAuthCode</p>
+                                        <p>http://192.168.0.105:8076/api/auth/v1/authCode</p>
 
                                         <p><strong>2、请求方式</strong></p>
-                                        <p>POST(application/json)</p>
+                                        <p>GET</p>
 
                                         <p><strong>3、输入参数</strong></p>
                                         <p>无</p>
 
                                         <p><strong>4、返回结果</strong></p>
-                                        <p>返回示例：{"code":0, "msg": "获取授权码成功！","data": "7552f531fc0d4b6e9547178aec362e41"}</p>
+                                        <p>返回示例：{"code": "0", "msg": "获取授权码成功！","data": "7552f531fc0d4b6e9547178aec362e41"}</p>
                                         <table class="layui-table" style="width: 700px;">
                                             <colgroup>
                                                 <col width="150">
@@ -50,19 +51,99 @@
                                                 <td>标识码，0为成功，其他均为失败</td>
                                                 <td>0</td>
                                             </tr>
+                                            <tr>
+                                                <td>data</td>
+                                                <td>String</td>
+                                                <td>授权码（60秒内有效）</td>
+                                                <td>0</td>
+                                            </tr>
                                         </table>
                                     </div>
                                     <div class="layui-tab-item">
-                                        内容-2
+                                        <p><strong>1、请求地址</strong></p>
+                                        <p>http://192.168.0.105:8076/api/auth/v1/authentication</p>
+
+                                        <p><strong>2、请求方式</strong></p>
+                                        <p>POST(application/json)</p>
+
+                                        <p><strong>3、输入参数</strong></p>
+                                        <p>输入示例：{ "authCode": "7f3f8e484abf4363b7f35471e3a8cfae", "accessKey": "3c08f763a35641d398ed54ad16d6140c", "signature": "f5907599f202bb042c7ea55af67ade8440423f944833deec3d59dc7345f5ab3d" }</p>
+                                        <table class="layui-table" style="width: 700px;">
+                                            <colgroup>
+                                                <col width="150">
+                                                <col width="150">
+                                                <col width="150">
+                                                <col width="150">
+                                            </colgroup>
+                                            <tr>
+                                                <th>键</th>
+                                                <th>类型</th>
+                                                <th>描述</th>
+                                                <th>示例值</th>
+                                            </tr>
+                                            <tr>
+                                                <td>authCode</td>
+                                                <td>String</td>
+                                                <td>授权码，</td>
+                                                <td>7f3f8e484abf4363b7f35471e3a8cfae</td>
+                                            </tr>
+                                            <tr>
+                                                <td>accessKey</td>
+                                                <td>String</td>
+                                                <td>`api访问ak`，登录系统后在密钥凭证功能里可获得</td>
+                                                <td>3c08f763a35641d398ed54ad16d6140c</td>
+                                            </tr>
+                                            <tr>
+                                                <td>signature</td>
+                                                <td>String</td>
+                                                <td>签名，使用authCode作为key，对`api访问ak密钥`进行sm3-hmac运算得到的结果，格式为hex</td>
+                                                <td>0</td>
+                                            </tr>
+                                        </table>
+
+                                        <p><strong>4、返回结果</strong></p>
+                                        <p>返回示例：{"code":0, "msg": "操作成功！","data": "tinyurl_7552f531fc0d4b6e9547178aec362e41"}</p>
+                                        <table class="layui-table" style="width: 700px;">
+                                            <colgroup>
+                                                <col width="150">
+                                                <col width="150">
+                                                <col width="150">
+                                                <col width="150">
+                                            </colgroup>
+                                            <tr>
+                                                <th>键</th>
+                                                <th>类型</th>
+                                                <th>描述</th>
+                                                <th>示例值</th>
+                                            </tr>
+                                            <tr>
+                                                <td>code</td>
+                                                <td>String</td>
+                                                <td>标识码，0为成功，其他均为失败</td>
+                                                <td>0</td>
+                                            </tr>
+                                            <tr>
+                                                <td>data</td>
+                                                <td>String</td>
+                                                <td>会话token，后续接口均须在请求header里带此token进行访问（键为`token`），会话时长为30分钟，操作时自动刷新会话时间</td>
+                                                <td>0</td>
+                                            </tr>
+                                        </table>
                                     </div>
                                     <div class="layui-tab-item">
-                                        内容-3
+                                        生成短链
                                     </div>
                                     <div class="layui-tab-item">
-                                        内容-4
+                                        启用短链
                                     </div>
                                     <div class="layui-tab-item">
-                                        内容-5
+                                        禁用短链
+                                    </div>
+                                    <div class="layui-tab-item">
+                                        获取短链详情
+                                    </div>
+                                    <div class="layui-tab-item">
+                                        更新短链失效时间
                                     </div>
                                 </div>
                             </div>
