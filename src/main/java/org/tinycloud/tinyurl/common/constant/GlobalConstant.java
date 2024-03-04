@@ -45,6 +45,10 @@ public class GlobalConstant {
      */
     public static final String TENANT_CAPTCHA_CODE_REDIS_KEY = "tinyurl:tenant:captcha:";
 
+    /**
+     * 租户注册邮箱验证码 redis key
+     */
+    public static final String TENANT_EMAIL_CODE_REDIS_KEY = "tinyurl:tenant:email:";
 
     /**
      * 租户token redis key

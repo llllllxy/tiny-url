@@ -74,9 +74,7 @@
 
         // 指定开关事件
         form.on('switch(switchFlag)', function(data) {
-            layer.msg('开关 checked：'+ (this.checked ? 'true' : 'false'), {
-                offset: '6px'
-            });
+            console.log('开关 checked：' + (this.checked ? 'true' : 'false'),);
         });
 
         AjaxUtil.get({

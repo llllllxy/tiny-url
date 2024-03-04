@@ -10,6 +10,7 @@ import org.tinycloud.tinyurl.common.model.ApiResult;
 import org.tinycloud.tinyurl.function.tenant.bean.dto.IpSettingDto;
 import org.tinycloud.tinyurl.function.tenant.bean.dto.TenantEditDto;
 import org.tinycloud.tinyurl.function.tenant.bean.dto.TenantLoginDto;
+import org.tinycloud.tinyurl.function.tenant.bean.dto.TenantRegisterDto;
 import org.tinycloud.tinyurl.function.tenant.bean.vo.TenantCaptchaCodeVo;
 import org.tinycloud.tinyurl.function.tenant.bean.vo.TenantInfoVo;
 import org.tinycloud.tinyurl.function.tenant.service.TenantAuthService;
@@ -116,4 +117,15 @@ public class TenantAuthController {
     public ApiResult<Boolean> editIpSetting(@Validated @RequestBody IpSettingDto dto) {
         return ApiResult.success(tenantAuthService.editIpSetting(dto), "修改配置信息成功！");
     }
+
+    @GetMapping("/sendEmail")
+    public ApiResult<Map<String, String>> sendEmail(@RequestParam(value = "receiveEmail") String receiveEmail) {
+        return ApiResult.success(tenantAuthService.sendEmail(receiveEmail), "邮件发送成功！");
+    }
+
+    @PostMapping("/register")
+    public ApiResult<Boolean> register(@Validated @RequestBody TenantRegisterDto dto) {
+        return ApiResult.success(tenantAuthService.register(dto), "注册成功！");
+    }
+
 }

@@ -16,9 +16,12 @@ import org.tinycloud.tinyurl.common.exception.TenantException;
 import org.tinycloud.tinyurl.common.utils.*;
 import org.tinycloud.tinyurl.common.utils.cipher.SM2Utils;
 import org.tinycloud.tinyurl.common.utils.cipher.SM3Utils;
+import org.tinycloud.tinyurl.function.admin.bean.vo.MailConfigVo;
+import org.tinycloud.tinyurl.function.admin.service.MailConfigService;
 import org.tinycloud.tinyurl.function.tenant.bean.dto.IpSettingDto;
 import org.tinycloud.tinyurl.function.tenant.bean.dto.TenantEditDto;
 import org.tinycloud.tinyurl.function.tenant.bean.dto.TenantLoginDto;
+import org.tinycloud.tinyurl.function.tenant.bean.dto.TenantRegisterDto;
 import org.tinycloud.tinyurl.function.tenant.bean.entity.TTenant;
 import org.tinycloud.tinyurl.function.tenant.bean.vo.TenantCaptchaCodeVo;
 import org.tinycloud.tinyurl.function.tenant.bean.vo.TenantInfoVo;
@@ -49,6 +52,9 @@ public class TenantAuthService {
 
     @Autowired
     private TenantMapper tenantMapper;
+
+    @Autowired
+    private MailConfigService mailConfigService;
 
     public TenantCaptchaCodeVo getCode() {
         // 保存验证码信息，生成验证key
@@ -199,6 +205,69 @@ public class TenantAuthService {
         wrapper.set(TTenant::getIpWhitelist, dto.getIpWhitelist());
         int rows = this.tenantMapper.update(wrapper);
 
+        return true;
+    }
+
+    public Map<String, String> sendEmail(String receiveEmail) {
+        // 保存验证码信息，生成验证key
+        String uuid = UUID.randomUUID().toString().trim().replaceAll("-", "");
+        String codeRedisKey = GlobalConstant.TENANT_EMAIL_CODE_REDIS_KEY + uuid;
+
+        Map<String, String> rsaKey = SM2Utils.genKeyPair();
+        String publicKey = rsaKey.get("pubKey");
+        String privateKey = rsaKey.get("priKey");
+        // 生成6位随机邮箱验证码
+        String randomCode = StrUtils.randomStr(6);
+
+        // 发送邮件
+        MailConfigVo mailConfig = mailConfigService.detail();
+        String emailTitle = "TINY短链租户账户激活邮箱验证";
+        String emailMsg = "<h2>您好，感谢您注册TINY短链平台！</h2>"
+                + "您的账户激活邮箱验证码为: " + randomCode + "，有效期十分钟"
+                + "<br/><br/>"
+                + "如果不是本人操作，请忽略。"
+                + "<br/><br/>"
+                + "TINY短链 - 专业的短链服务商";
+        EmailUtils.sendMsg(mailConfig.getEmailAccount(), mailConfig.getEmailPassword(), mailConfig.getSmtpAddress(), mailConfig.getSmtpPort(),
+                new String[]{receiveEmail}, emailTitle, emailMsg);
+
+        // 将验证码和私钥，存入redis 60秒
+        this.stringRedisTemplate.opsForValue().set(codeRedisKey, String.join("&", randomCode, privateKey), 60, TimeUnit.SECONDS);
+        return Map.of("publicKey", publicKey, "uuid", uuid);
+    }
+
+    public Boolean register(TenantRegisterDto dto) {
+        String tenantAccount = dto.getTenantAccount();
+        String password = dto.getPassword();
+        String tenantName = dto.getTenantName();
+        String uuid = dto.getUuid();
+        String tenantEmail = dto.getTenantEmail();
+        String emailCode = dto.getEmailCode();
+
+        String codeRedisKey = GlobalConstant.TENANT_EMAIL_CODE_REDIS_KEY + uuid;
+        String redisCache = this.stringRedisTemplate.opsForValue().get(codeRedisKey);
+        if (StrUtils.isEmpty(redisCache)) {
+            throw new TenantException(TenantErrorCode.EMAILCODE_IS_MISMATCH);
+        }
+        String code = redisCache.split("&")[0];
+        String privateKey = redisCache.split("&")[1];
+        if (!emailCode.equalsIgnoreCase(code)) {
+            throw new TenantException(TenantErrorCode.EMAILCODE_IS_MISMATCH);
+        }
+        String passwordDecrypt = SM2Utils.decrypt(privateKey, password);
+        if (StrUtils.isEmpty(passwordDecrypt)) {
+            throw new TenantException(TenantErrorCode.EMAILCODE_IS_MISMATCH);
+        }
+        String passwordDecryptHash = SM3Utils.hash(passwordDecrypt);
+
+        TTenant entity = new TTenant();
+        entity.setDelFlag(GlobalConstant.NOT_DELETED);
+        entity.setStatus(GlobalConstant.ENABLED);
+        entity.setTenantPassword(passwordDecryptHash);
+        entity.setTenantAccount(tenantAccount);
+        entity.setTenantEmail(tenantEmail);
+        entity.setTenantName(tenantName);
+        this.tenantMapper.insert(entity);
         return true;
     }
 }

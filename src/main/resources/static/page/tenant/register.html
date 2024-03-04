@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>租户控制台-注册</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta http-equiv="Access-Control-Allow-Origin" content="*">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <link rel="icon" href="/images/favicon.ico">
+    <link rel="stylesheet" href="/lib/layui/css/layui.css?v=2.8.11" media="all">
+    <!--[if lt IE 9]>
+    <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+    <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <style>
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden
+        }
+
+        body {
+            background: #5E7CE0;
+        }
+
+        body:after {
+            content: '';
+            background-repeat: no-repeat;
+            background-size: cover;
+            -webkit-filter: blur(3px);
+            -moz-filter: blur(3px);
+            -o-filter: blur(3px);
+            -ms-filter: blur(3px);
+            filter: blur(3px);
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: -1;
+        }
+
+        .layui-container {
+            width: 100%;
+            height: 100%;
+            overflow: hidden
+        }
+
+        .admin-login-background {
+            width: 360px;
+            height: 300px;
+            position: absolute;
+            left: 50%;
+            top: 40%;
+            margin-left: -180px;
+            margin-top: -100px;
+        }
+
+        .logo-title {
+            text-align: center;
+            letter-spacing: 2px;
+            padding: 14px 0;
+        }
+
+        .logo-title h1 {
+            color: #5E7CE0;
+            font-size: 25px;
+            font-weight: bold;
+        }
+
+        .login-form {
+            background-color: #fff;
+            border: 1px solid #fff;
+            border-radius: 3px;
+            padding: 14px 20px;
+            box-shadow: 0 0 8px #eeeeee;
+        }
+
+        .login-form .layui-form-item {
+            position: relative;
+        }
+
+        .login-form .layui-form-item label {
+            position: absolute;
+            left: 1px;
+            top: 1px;
+            width: 38px;
+            line-height: 36px;
+            text-align: center;
+            color: #d2d2d2;
+        }
+
+        .login-form .layui-form-item input {
+            padding-left: 36px;
+        }
+
+        .captcha-img img {
+            border: 1px solid #e6e6e6;
+            height: 36px;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+<div class="layui-container">
+    <div class="admin-login-background">
+        <div class="layui-form login-form">
+            <form class="layui-form" action="">
+                <div class="layui-form-item logo-title">
+                    <h1>创建组织团队账号</h1>
+                </div>
+
+                <div class="layui-form-item">
+                    <div class="layui-input-wrap">
+                        <div class="layui-input-prefix">
+                            <i class="layui-icon layui-icon-username"></i>
+                        </div>
+                        <input type="text" name="tenantAccount" value="" lay-verify="required|tenantAccount"
+                               placeholder="组织团队账号" lay-reqtext="请填写组织团队账号" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <div class="layui-input-wrap">
+                        <div class="layui-input-prefix">
+                            <i class="layui-icon layui-icon-form"></i>
+                        </div>
+                        <input type="text" name="tenantName" value="" lay-verify="required|tenantName" placeholder="组织团队名称"
+                               lay-reqtext="请填写组织团队名称" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <div class="layui-input-wrap">
+                        <div class="layui-input-prefix">
+                            <i class="layui-icon layui-icon-password"></i>
+                        </div>
+                        <input type="password" name="password" value="" lay-verify="required|password" placeholder="密码"
+                               lay-reqtext="请填写密码" autocomplete="off" class="layui-input" lay-affix="eye">
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <div class="layui-input-wrap">
+                        <div class="layui-input-prefix">
+                            <i class="layui-icon layui-icon-password"></i>
+                        </div>
+                        <input type="password" name="confirmPassword" value="" lay-verify="required|confirmPassword"
+                               placeholder="确认密码" lay-reqtext="请填写密码" autocomplete="off" class="layui-input" lay-affix="eye">
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <div class="layui-row">
+                        <div class="layui-col-xs7">
+                            <div class="layui-input-wrap">
+                                <div class="layui-input-prefix">
+                                    <i class="layui-icon layui-icon-email"></i>
+                                </div>
+                                <input type="text" name="tenantEmail" id="tenantEmail" value=""
+                                       lay-verify="required|email" placeholder="邮箱" lay-reqtext="请填写邮箱"
+                                       autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-col-xs5">
+                            <div style="margin-left: 11px;">
+                                <button type="button" class="layui-btn layui-btn-fluid layui-btn-primary" lay-on="sendEmail" id="sendEmail">获取验证码
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <div class="layui-input-wrap">
+                        <div class="layui-input-prefix">
+                            <i class="layui-icon layui-icon-vercode"></i>
+                        </div>
+                        <input type="text" name="emailCode" value="" lay-verify="required|emailCode" placeholder="验证码"
+                               lay-reqtext="请填写验证码" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+
+                <div class="layui-form-item" style="top: 10px">
+                    <button class="layui-btn layui-btn-fluid" lay-submit lay-filter="register" id="register">立即提交</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script src="/lib/jquery/jquery-2.1.4.min.js" charset="utf-8"></script>
+<script src="/lib/jq-module/jquery.particleground.min.js" charset="utf-8"></script>
+<script src="/lib/cipher/sm3.js?v=2.0.0" charset="utf-8"></script>
+<script src="/lib/cipher/sm2.js?v=2.0.0" charset="utf-8"></script>
+<script src="/lib/layui/layui.js?v=2.8.18" charset="utf-8"></script>
+<script src="/js/lay-config.js?v=2.0.0" charset="utf-8"></script>
+<script src="/js/public.js?v=2.0.0" charset="utf-8"></script>
+<script>
+    var salt = "W%o$gxG6Nbbg+S4@W5&9VQeud&2O1^V8&We^YwhX-1N+_m7&KQ#JJ@a+UX9Rr5Bk";
+    var verifyKey;
+    var publicKey;
+
+    layui.use(['form', 'layer'], function () {
+        var $ = layui.jquery,
+            form = layui.form,
+            layer = layui.layer,
+            util = layui.util;
+
+        // 自定义验证规则
+        form.verify({
+            // 确认密码
+            confirmPassword: function (value, item) {
+                var passwordValue = $('input[name="password"]').val();
+                if (value !== passwordValue) {
+                    return '两次密码输入不一致!';
+                }
+            }
+        });
+
+
+        var sendEmail = $('#sendEmail');
+        // 发送邮箱验证码的按钮的点击事件
+        sendEmail.click(function () {
+            var self = $(this);
+            // 按钮不可点击态，直接返回
+            if (self.hasClass('layui-btn-disabled')) {
+                return false;
+            }
+
+            var isvalid = form.validate('#tenantEmail'); // 主动触发验证，v2.7.0 新增
+            var emailInput = $('input[name="tenantEmail"]').val();
+            if (isvalid) {
+                // 此处可继续书写「发送验证码」等后续逻辑
+                AjaxUtil.get({
+                    url: "/tenant/auth/sendEmail?receiveEmail=" + emailInput,
+                    success: function (res) {
+                        if (res.code == 0) {
+                            layer.msg(res.msg);
+                            verifyKey = res.data.uuid;
+                            publicKey = res.data.publicKey;
+                            // 获取成功，则将按钮设置成不允许点击，60秒内只允许一次
+                            self.addClass('layui-btn-disabled');
+                            let startTime = new Date().getTime();
+                            let endTime = startTime + 59000;
+                            util.countdown({
+                                date: endTime,
+                                now: startTime,
+                                clock: function (obj, countdown) {
+                                    self.html(obj.s + ' 秒');
+                                },
+                                done: function () {
+                                    console.log('time is up');
+                                    self.removeClass('layui-btn-disabled').html('重新发送');
+                                }
+                            });
+                        } else {
+                            layer.msg(res.msg, {time: 1000});
+                        }
+                    },
+                    error: function (error) {
+                        layer.msg(error, {time: 1000, icon: 2});
+                    }
+                });
+            }
+        });
+
+        // 粒子线条背景
+        $(document).ready(function () {
+            $('.layui-container').particleground({
+                dotColor: '#7ec7fd',
+                lineColor: '#7ec7fd'
+            });
+        });
+
+        // 进行登录操作
+        form.on('submit(register)', function (data) {
+            data = data.field;
+            if (isEmpty(publicKey)) {
+                layer.msg('请先获取验证码');
+                return false;
+            }
+            if (isEmpty(verifyKey)) {
+                layer.msg('请先获取验证码');
+                return false;
+            }
+
+            // 先对密码做哈希运算
+            let hashData = sm3(data.password + salt);
+            // 然后再做sm2公钥加密
+            let encryptData = sm2.doEncrypt(hashData, publicKey);
+            // 加密结果
+            data.password = encryptData;
+            data.uuid = verifyKey;
+            startLoading();
+            AjaxUtil.postJSON({
+                url: "/tenant/auth/register",
+                data: JSON.stringify(data),
+                success: function (res) {
+                    stopLoading();
+                    if (res.code == 0) {
+                        layer.msg('注册成功，请重新登录!', {
+                            time: 1000
+                        }, function () {
+                            window.location = '/page/tenant/login.html';
+                        });
+                    } else {
+                        layer.msg(res.msg, {time: 1000});
+                    }
+                },
+                error: function (res) {
+                    stopLoading();
+                    layer.msg(res, {time: 1000, icon: 2});
+                }
+            });
+            return false;
+        });
+    });
+
+    function startLoading() {
+        var registerBtn = document.querySelector('#register');
+        registerBtn.classList.add('layui-disabled');
+        registerBtn.setAttribute('disabled', true);
+        registerBtn.innerHTML = '<span>提交中</span><i class="layui-icon layui-icon-loading layui-anim layui-anim-rotate layui-anim-loop"></i>';
+    }
+
+    function stopLoading() {
+        var registerBtn = document.querySelector('#register');
+        registerBtn.classList.remove('layui-disabled');
+        registerBtn.removeAttribute('disabled');
+        registerBtn.innerHTML = '<span>立即提交</span>';
+    }
+</script>
+</body>
+</html>
