@@ -1,4 +1,4 @@
-package org.tinycloud.tinyurl.common.config;
+package org.tinycloud.tinyurl.common.config.mybatis;
 
 import com.baomidou.mybatisplus.annotation.DbType;
 import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
