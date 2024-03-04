@@ -65,24 +65,25 @@ api接口文档页
 | 依赖                | 说明           |
 |-------------------|--------------|
 | SpringBoot 3.1.9  | 基础框架         |
-| Hikari             | 国产高性能数据库连接池 |
-| Thymeleaf         | 模板引擎         |
+| Hikari            | 高性能数据库连接池 |
+| MyBatis-Plus      | MyBatis的增强ORM |
 | JdbcTemplate      | 持久层框架        |
 | Redis             | 业务缓存、会话共享    |
 | Guava             | Hash算法、布隆过滤器 |
+| Layui             | 前端模板         |
 
 ## 运行环境
-- Jdk8
+- Jdk17
 - MySQL5.6+
 - Redis3.0+
 
 ## 启动部署教程
 
-1. 新建MySQL数据库并导入script文件夹下的数据库脚本
-2. 修改配置文件中application.yml中数据库和Redis连接信息
-3. 运行启动类BluewindShortUrlApplication，即可正常启动项目
-4. 平台首页地址：http://localhost:8076/
-5. 租户登录地址：http://localhost:8076/tenant/login  账户密码 tenant1 / 123456
+1. 新建`MySQL`数据库并导入`resources/init`文件夹下的数据库脚本
+2. 修改配置文件中`application.yml`中`数据库`和`Redis`连接信息
+3. 运行启动类`TinyUrlApplication`，即可正常启动项目
+4. 平台首页地址：`http://localhost:9999/`
+5. 租户登录地址：`http://192.168.0.107:9999/page/tenant/login.html`  账户密码 `zhangsan / 123456`
 
 ## 实现逻辑
 1、使用 MurmurHash 算法将原始长链接 hash 为 32 位散列值，将散列值转为 BASE62 编码 ，即为短链接。
