@@ -3,6 +3,7 @@ package org.tinycloud.tinyurl.common.config.mybatis;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
@@ -29,6 +30,9 @@ public class RedisIdWorker {
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
 
+    @Autowired
+    private ThreadPoolTaskExecutor threadPoolTaskExecutor;
+
 
     public Long nextId(String tableName) {
         LocalDate now = LocalDate.now();
@@ -40,10 +44,10 @@ public class RedisIdWorker {
 
         String keyPrefix = "icr:" + today + ":" + tableName;
         Long current = this.stringRedisTemplate.opsForValue().increment(keyPrefix);
-        // 如果是第一次的话，刷一下则过期时间为一个月，防止key越攒越多
-        if (current == 1L) {
+        // 每次都刷新一下缓存的时候，防止服务器时间被前移
+        threadPoolTaskExecutor.execute(() -> {
             this.stringRedisTemplate.expire(keyPrefix, expireTime, TimeUnit.SECONDS);
-        }
+        });
         String number = padWithZero(current, 9);
         // today-7位， number-9位（最大值999999999，一天这么多个ID也够用了，不够的话就再补充长度）
         // 相加共16位，如2024064000000090
