@@ -5,6 +5,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
+import org.tinycloud.tinyurl.common.config.ApplicationConfig;
 import org.tinycloud.tinyurl.common.constant.GlobalConstant;
 import org.tinycloud.tinyurl.common.enums.RestfulErrorCode;
 import org.tinycloud.tinyurl.common.exception.RestfulException;
@@ -37,6 +38,9 @@ public class ApiAuthService {
 
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
+
+    @Autowired
+    private ApplicationConfig applicationConfig;
 
     public String authCode() {
         String authCode = UUID.randomUUID().toString().replace("-", "");
@@ -100,7 +104,7 @@ public class ApiAuthService {
         // 缓存redis里60秒，表示有效期
         entity.setTenantPassword(null);
         this.stringRedisTemplate.opsForValue().set(GlobalConstant.TENANT_RESTFUL_TOKEN_REDIS_KEY + token,
-                JsonUtils.toJsonString(entity), 1800, TimeUnit.SECONDS);
+                JsonUtils.toJsonString(entity), applicationConfig.getApiAuthTimeout(), TimeUnit.SECONDS);
         return token;
     }
 }

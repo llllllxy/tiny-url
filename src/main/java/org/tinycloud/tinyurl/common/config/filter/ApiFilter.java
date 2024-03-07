@@ -16,6 +16,7 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.PathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.servlet.HandlerExceptionResolver;
+import org.tinycloud.tinyurl.common.config.ApplicationConfig;
 import org.tinycloud.tinyurl.common.constant.GlobalConstant;
 import org.tinycloud.tinyurl.common.enums.RestfulErrorCode;
 import org.tinycloud.tinyurl.common.exception.RestfulException;
@@ -43,6 +44,9 @@ public class ApiFilter extends OncePerRequestFilter implements Ordered {
 
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
+
+    @Autowired
+    private ApplicationConfig applicationConfig;
 
     @Autowired
     @Qualifier("handlerExceptionResolver")
@@ -87,7 +91,7 @@ public class ApiFilter extends OncePerRequestFilter implements Ordered {
             }
 
             // 刷新会话缓存时长
-            stringRedisTemplate.expire(GlobalConstant.TENANT_RESTFUL_TOKEN_REDIS_KEY + token, 1800, TimeUnit.SECONDS);
+            stringRedisTemplate.expire(GlobalConstant.TENANT_RESTFUL_TOKEN_REDIS_KEY + token, applicationConfig.getApiAuthTimeout(), TimeUnit.SECONDS);
 
             ApiFilterHolder.setTenant(tenantInfo);
             // 进行过滤操作

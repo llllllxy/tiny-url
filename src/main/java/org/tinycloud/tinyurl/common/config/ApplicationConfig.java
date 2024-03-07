@@ -40,6 +40,11 @@ public class ApplicationConfig {
      */
     private Integer adminAuthTimeout = 1800;
 
+    /**
+     * restful-api系统会话时长
+     */
+    private Integer apiAuthTimeout = 1800;
+
     public String getName() {
         return name;
     }
@@ -78,5 +83,13 @@ public class ApplicationConfig {
 
     public void setAdminAuthTimeout(Integer adminAuthTimeout) {
         this.adminAuthTimeout = adminAuthTimeout;
+    }
+
+    public Integer getApiAuthTimeout() {
+        return apiAuthTimeout;
+    }
+
+    public void setApiAuthTimeout(Integer apiAuthTimeout) {
+        this.apiAuthTimeout = apiAuthTimeout;
     }
 }
