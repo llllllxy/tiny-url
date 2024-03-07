@@ -1,5 +1,6 @@
 package org.tinycloud.tinyurl.common.model;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 
@@ -12,6 +13,7 @@ import java.io.Serializable;
  * @since 2023-03-07 15:47:38
  */
 public class BasePageDto implements Serializable {
+    @Serial
     private static final long serialVersionUID = -1L;
 
     /** 第几页 */

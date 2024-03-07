@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
-import org.tinycloud.tinyurl.common.config.interceptor.TenantHolder;
+import org.tinycloud.tinyurl.common.config.interceptor.holder.TenantHolder;
 import org.tinycloud.tinyurl.common.model.PageModel;
 import org.tinycloud.tinyurl.common.utils.StrUtils;
 import org.tinycloud.tinyurl.function.tenant.bean.dto.TenantAccessLogQueryDto;

@@ -22,6 +22,8 @@ public class JsonUtils {
     final static Logger log = LoggerFactory.getLogger(JsonUtils.class);
 
 
+    private static final ObjectMapper objectMapper = new ObjectMapper();
+
     /**
      * 对象转JSON字符串
      *
@@ -31,7 +33,6 @@ public class JsonUtils {
     public static String toJsonString(Object value) {
         if (value != null) {
             try {
-                ObjectMapper objectMapper = new ObjectMapper();
                 return objectMapper.writeValueAsString(value);
             } catch (JsonProcessingException e) {
                 if (log.isErrorEnabled()) {
@@ -54,7 +55,6 @@ public class JsonUtils {
     public static <T> T readValue(String content, Class<T> valueType) {
         if (content != null && !content.trim().isEmpty()) {
             try {
-                ObjectMapper objectMapper = new ObjectMapper();
                 return objectMapper.readValue(content, valueType);
             } catch (IOException e) {
                 if (log.isErrorEnabled()) {
@@ -77,7 +77,6 @@ public class JsonUtils {
     public static <T> T readValue(String content, TypeReference<T> valueTypeRef) {
         if (content != null && !content.trim().isEmpty()) {
             try {
-                ObjectMapper objectMapper = new ObjectMapper();
                 return objectMapper.readValue(content, valueTypeRef);
             } catch (IOException e) {
                 if (log.isErrorEnabled()) {
@@ -100,7 +99,6 @@ public class JsonUtils {
     public static <T> T readValue(InputStream src, Class<T> valueType) {
         if (src != null) {
             try {
-                ObjectMapper objectMapper = new ObjectMapper();
                 return objectMapper.readValue(src, valueType);
             } catch (IOException e) {
                 if (log.isErrorEnabled()) {
@@ -122,7 +120,6 @@ public class JsonUtils {
     public static <T> List<T> readArrayValue(String content, Class<T> clazz) {
         if (content != null && !content.trim().isEmpty()) {
             try {
-                ObjectMapper objectMapper = new ObjectMapper();
                 return objectMapper.readValue(content, objectMapper.getTypeFactory().constructParametricType(ArrayList.class, clazz));
             } catch (Exception e) {
                 if (log.isErrorEnabled()) {
@@ -145,7 +142,6 @@ public class JsonUtils {
      * @return 转换后的对象
      */
     public static <T> T convertValue(Object fromValue, Class<T> toValueType) {
-        ObjectMapper objectMapper = new ObjectMapper();
         return objectMapper.convertValue(fromValue, toValueType);
     }
 
@@ -157,7 +153,6 @@ public class JsonUtils {
      */
     public static boolean isJson(String content) {
         try {
-            ObjectMapper objectMapper = new ObjectMapper();
             JsonNode jsonNode = objectMapper.readTree(content);
             return jsonNode.isObject() || jsonNode.isArray();
         } catch (Exception e) {

@@ -2,6 +2,7 @@ package org.tinycloud.tinyurl.function.tenant.service;
 
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import eu.bitwalker.useragentutils.UserAgent;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,13 +10,15 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.tinycloud.tinyurl.common.config.ApplicationConfig;
 import org.tinycloud.tinyurl.common.config.interceptor.TenantAuthUtil;
-import org.tinycloud.tinyurl.common.config.interceptor.TenantHolder;
+import org.tinycloud.tinyurl.common.config.interceptor.holder.LoginTenant;
+import org.tinycloud.tinyurl.common.config.interceptor.holder.TenantHolder;
 import org.tinycloud.tinyurl.common.constant.GlobalConstant;
 import org.tinycloud.tinyurl.common.enums.TenantErrorCode;
 import org.tinycloud.tinyurl.common.exception.TenantException;
 import org.tinycloud.tinyurl.common.utils.*;
 import org.tinycloud.tinyurl.common.utils.cipher.SM2Utils;
 import org.tinycloud.tinyurl.common.utils.cipher.SM3Utils;
+import org.tinycloud.tinyurl.common.utils.web.UserAgentUtils;
 import org.tinycloud.tinyurl.function.admin.bean.vo.MailConfigVo;
 import org.tinycloud.tinyurl.function.admin.service.MailConfigService;
 import org.tinycloud.tinyurl.function.tenant.bean.dto.IpSettingDto;
@@ -84,7 +87,7 @@ public class TenantAuthService {
     }
 
 
-    public String login(TenantLoginDto dto) {
+    public String login(TenantLoginDto dto, HttpServletRequest request) {
         String username = dto.getUsername();
         String password = dto.getPassword();
         String captcha = dto.getCaptcha();
@@ -118,10 +121,20 @@ public class TenantAuthService {
             throw new TenantException(TenantErrorCode.TENANT_USERNAME_OR_PASSWORD_MISMATCH);
         }
 
+        // 构建会话token进行返回
         String token = "tinyurl_" + UUID.randomUUID().toString().trim().replaceAll("-", "");
-        // 将验证码和私钥，存入redis 60秒
-        entity.setTenantPassword(null);
-        this.stringRedisTemplate.opsForValue().set(GlobalConstant.TENANT_TOKEN_REDIS_KEY + token, JsonUtils.toJsonString(entity), applicationConfig.getTenantAuthTimeout(), TimeUnit.SECONDS);
+        LoginTenant loginTenant = BeanConvertUtils.convertTo(entity, LoginTenant::new);
+        loginTenant.setToken(token);
+        UserAgent userAgent = UserAgentUtils.getUserAgent(request);
+        loginTenant.setBrowser(userAgent.getBrowser().getName());
+        loginTenant.setOs(userAgent.getOperatingSystem().getName());
+        String ip = IpGetUtils.getIpAddr(request);
+        loginTenant.setIpAddress(ip);
+        loginTenant.setIpLocation(IpAddressUtils.getAddressByIP(ip));
+        long currentTime = System.currentTimeMillis();
+        loginTenant.setLoginTime(currentTime);
+        loginTenant.setLoginExpireTime(currentTime + applicationConfig.getTenantAuthTimeout() * 1000);
+        this.stringRedisTemplate.opsForValue().set(GlobalConstant.TENANT_TOKEN_REDIS_KEY + token, JsonUtils.toJsonString(loginTenant), applicationConfig.getTenantAuthTimeout(), TimeUnit.SECONDS);
 
         return token;
     }

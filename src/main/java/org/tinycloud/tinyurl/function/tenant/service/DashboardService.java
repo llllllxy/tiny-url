@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.tinycloud.tinyurl.common.config.interceptor.TenantHolder;
+import org.tinycloud.tinyurl.common.config.interceptor.holder.TenantHolder;
 import org.tinycloud.tinyurl.common.constant.GlobalConstant;
 import org.tinycloud.tinyurl.common.utils.DateUtils;
 import org.tinycloud.tinyurl.function.tenant.bean.entity.TUrlAccessLog;

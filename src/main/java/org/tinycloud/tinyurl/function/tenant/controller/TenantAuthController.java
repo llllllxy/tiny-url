@@ -41,8 +41,8 @@ public class TenantAuthController {
     }
 
     @PostMapping("/login")
-    public ApiResult<String> login(@Validated @RequestBody TenantLoginDto dto) {
-        return ApiResult.success(tenantAuthService.login(dto), "登录成功，欢迎回来！");
+    public ApiResult<String> login(@Validated @RequestBody TenantLoginDto dto, HttpServletRequest request) {
+        return ApiResult.success(tenantAuthService.login(dto, request), "登录成功，欢迎回来！");
     }
 
     @GetMapping("/logout")

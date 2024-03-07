@@ -1,6 +1,4 @@
-package org.tinycloud.tinyurl.common.config.interceptor;
-
-import org.tinycloud.tinyurl.function.tenant.bean.entity.TTenant;
+package org.tinycloud.tinyurl.common.config.interceptor.holder;
 
 import java.util.Objects;
 
@@ -15,14 +13,14 @@ import java.util.Objects;
  */
 public class TenantHolder {
 
-    private final static ThreadLocal<TTenant> tenant = new ThreadLocal<>();
+    private final static ThreadLocal<LoginTenant> tenant = new ThreadLocal<>();
 
-    public static TTenant getTenant() {
+    public static LoginTenant getTenant() {
         return tenant.get();
     }
 
     public static Long getTenantId() {
-        TTenant tenant = getTenant();
+        LoginTenant tenant = getTenant();
         if (Objects.isNull(tenant)) {
             return null;
         } else {
@@ -31,7 +29,7 @@ public class TenantHolder {
     }
 
     public static String getTenantAccount() {
-        TTenant tenant = getTenant();
+        LoginTenant tenant = getTenant();
         if (Objects.isNull(tenant)) {
             return "";
         } else {
@@ -39,7 +37,7 @@ public class TenantHolder {
         }
     }
 
-    public static void setTenant(TTenant t) {
+    public static void setTenant(LoginTenant t) {
         tenant.set(t);
     }
 

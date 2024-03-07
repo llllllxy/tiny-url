@@ -3,6 +3,7 @@ package org.tinycloud.tinyurl.common.config.interceptor;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 import org.tinycloud.tinyurl.common.config.ApplicationConfig;
+import org.tinycloud.tinyurl.common.config.interceptor.holder.LoginTenant;
+import org.tinycloud.tinyurl.common.config.interceptor.holder.TenantHolder;
 import org.tinycloud.tinyurl.common.constant.GlobalConstant;
 import org.tinycloud.tinyurl.common.enums.TenantErrorCode;
 import org.tinycloud.tinyurl.common.exception.TenantException;
@@ -27,9 +30,11 @@ import java.util.concurrent.TimeUnit;
  * @date 2022-03-26 20:48
  * @description 租户会话拦截器
  **/
+@Slf4j
 @Component
 public class TenantAuthInterceptor implements HandlerInterceptor {
-    final static Logger logger = LoggerFactory.getLogger(TenantAuthInterceptor.class);
+
+    private static final Long MILLIS_MINUTE_TEN = 20 * 60 * 1000L;
 
     @Autowired
     private StringRedisTemplate redisTemplate;
@@ -63,14 +68,19 @@ public class TenantAuthInterceptor implements HandlerInterceptor {
         }
 
         // 再判断token是否合法
-        TTenant tenantInfo = JsonUtils.readValue(tenantInfoString, TTenant.class);
-        if (Objects.isNull(tenantInfo)) {
+        LoginTenant loginTenant = JsonUtils.readValue(tenantInfoString, LoginTenant.class);
+        if (Objects.isNull(loginTenant)) {
             throw new TenantException(TenantErrorCode.TENANT_NOT_LOGIN);
         }
-        // 刷新会话缓存时长
-        redisTemplate.expire(GlobalConstant.TENANT_TOKEN_REDIS_KEY + token, applicationConfig.getTenantAuthTimeout(), TimeUnit.SECONDS);
+        long expireTime = loginTenant.getLoginExpireTime();
+        long currentTime = System.currentTimeMillis();
+        if (expireTime - currentTime <= MILLIS_MINUTE_TEN) {
+            // 刷新会话缓存时长
+            loginTenant.setLoginExpireTime(currentTime + applicationConfig.getTenantAuthTimeout() * 1000);
+            redisTemplate.expire(GlobalConstant.TENANT_TOKEN_REDIS_KEY + token, applicationConfig.getTenantAuthTimeout(), TimeUnit.SECONDS);
+        }
 
-        TenantHolder.setTenant(tenantInfo);
+        TenantHolder.setTenant(loginTenant);
 
         // 合格不需要拦截，放行
         return true;
