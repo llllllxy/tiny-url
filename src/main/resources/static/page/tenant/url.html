@@ -1,3 +1,13 @@
+<style>
+    a {
+        color: #5E7CE0;
+        text-decoration: underline;
+    }
+    a:hover {
+        color: #7E96E6
+    }
+</style>
+
 <div class="layuimini-container layuimini-page-anim">
     <div class="layuimini-main">
 
@@ -168,7 +178,7 @@
                 {field: 'id', width: '10%', title: 'ID', sort: true, align: 'center', fixed: 'left'},
                 {
                     field: 'surl', width: '10%', title: '短链', templet: function (d) {
-                        return `<a href="javascript:;" lay-event="copy">${d.surl}</a>`
+                        return `<a href="javascript:;" lay-event="copy" onmouseover="showTip(this)" onmouseleave="closeTip(this)">${d.surl}</a>`
                     }
                 },
                 {field: 'lurl', width: '20%', title: '原始链接'},
@@ -363,17 +373,31 @@
                 handleClipboard(lineData.surl)
             }
         });
+
+
+        function handleClipboard(text) {
+            const oInput = document.createElement('input');
+            oInput.value = text;
+            document.body.appendChild(oInput);
+            oInput.select(); // 选择对象
+            document.execCommand("Copy"); // 执行浏览器复制命令
+            oInput.className = 'oInput';// 设置class名
+            document.getElementsByClassName("oInput")[0].remove();// 移除这个input
+            layer.msg('已复制到粘贴板');
+        }
+
+        var layerTipIndex
+        window.showTip = function(t) {
+            var row = '点击复制链接';
+            //小tips
+            layerTipIndex = layer.tips(row,t,{
+                tips:[1,'#5E7CE0'],
+                time:4000
+            })
+        }
+
+        window.closeTip = function (t) {
+            layer.close(layerTipIndex);
+        }
     });
-
-
-    function handleClipboard(text) {
-        const oInput = document.createElement('input');
-        oInput.value = text;
-        document.body.appendChild(oInput);
-        oInput.select(); // 选择对象
-        document.execCommand("Copy"); // 执行浏览器复制命令
-        oInput.className = 'oInput';// 设置class名
-        document.getElementsByClassName("oInput")[0].remove();// 移除这个input
-        layer.msg('已复制到粘贴板');
-    }
 </script>
