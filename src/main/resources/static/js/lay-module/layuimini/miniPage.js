@@ -163,6 +163,28 @@ layui.define(["element", "jquery"], function (exports) {
         },
 
         /**
+         * 获取指定链接内容
+         * @param href
+         * @returns {string}
+         */
+        getHrefContent: function (href) {
+            var content = '';
+            var v = new Date().getTime();
+            AjaxUtil.get({
+                url: href.indexOf("?") > -1 ? href + '&v=' + v : href + '?v=' + v,
+                dataType: 'html',
+                async: false,
+                success: function (data) {
+                    content = data;
+                },
+                error: function (errorText) {
+                    return layer.msg(errorText);
+                }
+            });
+            return content;
+        },
+
+        /**
          * 获取弹出层的宽高
          * @returns {jQuery[]}
          */
