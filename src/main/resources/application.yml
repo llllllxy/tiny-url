@@ -9,6 +9,7 @@ tinyurl:
   # 会话控制(时间类的单位都是秒)
   tenant-auth-timeout: 1800
   admin-auth-timeout: 1800
+  api-auth-timeout: 1800
 
 
 server:
