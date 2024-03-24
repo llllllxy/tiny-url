@@ -1,6 +1,7 @@
 package org.tinycloud.tinyurl.common.config;
 
 
+import com.google.common.collect.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.HttpMessageConverter;
@@ -12,7 +13,6 @@ import org.tinycloud.tinyurl.common.config.interceptor.AccessLimitInterceptor;
 import org.tinycloud.tinyurl.common.config.interceptor.TenantAuthInterceptor;
 import org.tinycloud.tinyurl.common.config.interceptor.TraceIdInterceptor;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -38,23 +38,22 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        List<String> tenantIncludePaths = new ArrayList<>() {{
-            add("/tenant/auth/logout");
-            add("/tenant/auth/getInfo");
-            add("/tenant/auth/initMenu");
-            add("/tenant/auth/getTenantInfo");
-            add("/tenant/auth/editTenantInfo");
-            add("/tenant/auth/getAkInfo");
-            add("/tenant/auth/resetAkInfo");
-            add("/tenant/auth/editIpSetting");
+        List<String> tenantIncludePaths = Lists.newArrayList(
+            "/tenant/auth/logout",
+            "/tenant/auth/getInfo",
+            "/tenant/auth/initMenu",
+            "/tenant/auth/getTenantInfo",
+            "/tenant/auth/editTenantInfo",
+            "/tenant/auth/getAkInfo",
+            "/tenant/auth/resetAkInfo",
+            "/tenant/auth/editIpSetting",
 
-
-            add("/tenant/tenant/**"); // 租户信息管理
-            add("/tenant/url/**"); // 租户url短链管理
-            add("/tenant/accessLog/**"); // 租户短链访问日志管理
-            add("/tenant/dashboard/**"); // 租户仪表盘
-            add("/tenant/statistic/**"); // 租户数据统计管理
-        }};
+            "/tenant/tenant/**", // 租户信息管理
+            "/tenant/url/**", // 租户url短链管理
+            "/tenant/accessLog/**", // 租户短链访问日志管理
+            "/tenant/dashboard/**", // 租户仪表盘
+            "/tenant/statistic/**" // 租户数据统计管理
+        );
 
         // 注册租户会话拦截器
         registry.addInterceptor(tenantAuthInterceptor)

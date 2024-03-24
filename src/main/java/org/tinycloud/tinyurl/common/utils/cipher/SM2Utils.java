@@ -82,10 +82,10 @@ public class SM2Utils {
         BigInteger privateKey = ((ECPrivateKeyParameters) asymmetricCipherKeyPair.getPrivate()).getD();
         String priKey = privateKey.toString(16);
 
-        return new HashMap<String, String>() {{
-            put("priKey", priKey);
-            put("pubKey", pubKey);
-        }};
+        HashMap<String, String> keyMap = new HashMap<>();
+        keyMap.put("priKey", priKey);
+        keyMap.put("pubKey", pubKey);
+        return keyMap;
     }
 
     /**
