@@ -67,7 +67,6 @@ api接口文档页
 | SpringBoot 3.1.9  | 基础框架         |
 | Hikari            | 高性能数据库连接池 |
 | MyBatis-Plus      | MyBatis的增强ORM |
-| JdbcTemplate      | 持久层框架        |
 | Redis             | 业务缓存、会话共享    |
 | Guava             | Hash算法、布隆过滤器 |
 | Layui             | 前端模板         |
