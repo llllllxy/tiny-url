@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Component;
+import org.tinycloud.tinyurl.common.utils.StrUtils;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -49,9 +50,9 @@ public class RedisIdWorker {
             this.stringRedisTemplate.expire(keyPrefix, expireTime, TimeUnit.SECONDS);
         });
         String number = padWithZero(current, 9);
-        // today-7位， number-9位（最大值999999999，一天这么多个ID也够用了，不够的话就再补充长度）
-        // 相加共16位，如2024064000000090
-        return Long.parseLong(today + number);
+        // today-7位， number-9位，随机数-3位
+        // 相加共19位，如2024064000000090268
+        return Long.parseLong(today + number + StrUtils.randomNumber(3));
     }
 
     /**
