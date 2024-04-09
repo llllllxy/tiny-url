@@ -22,6 +22,6 @@
         </if>
         group by
         su.tenant_id, su.surl
-        order by created_at desc
+        order by su.created_at desc
     </select>
 </mapper>
