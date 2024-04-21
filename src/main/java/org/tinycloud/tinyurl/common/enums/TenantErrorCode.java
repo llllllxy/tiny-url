@@ -11,6 +11,7 @@ public enum TenantErrorCode {
     TENANT_URL_NOT_EXIST("3100", "此短链不存在"),
     TENANT_URL_IS_ENABLE("3101", "只可启用'停用'状态的短链"),
     TENANT_URL_IS_DISABLE("3102", "只可停用'启用'状态的短链"),
+    TENANT_EXPIREDATE_FORMAT_ERROR("3103", "过期时间格式错误"),
     ;
 
     private String code;
