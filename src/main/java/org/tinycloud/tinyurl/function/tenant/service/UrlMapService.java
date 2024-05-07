@@ -16,6 +16,7 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
+import org.tinycloud.tinyurl.common.config.ApplicationConfig;
 import org.tinycloud.tinyurl.common.constant.GlobalConstant;
 import org.tinycloud.tinyurl.common.enums.TenantErrorCode;
 import org.tinycloud.tinyurl.common.exception.TenantException;
@@ -48,6 +49,9 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 public class UrlMapService {
+
+    @Autowired
+    private ApplicationConfig applicationConfig;
 
     @Autowired
     private UrlMapMapper urlMapMapper;
@@ -194,11 +198,13 @@ public class UrlMapService {
         Page<TUrlMap> urlMapPage = this.urlMapMapper.selectPage(Page.of(dto.getPageNo(), dto.getPageSize()), queryWrapper);
 
         if (urlMapPage != null && !CollectionUtils.isEmpty(urlMapPage.getRecords())) {
+            final String host = LocalHostUtils.getLocalHost();
             responsePage.setTotalPage(urlMapPage.getPages());
             responsePage.setTotalCount(urlMapPage.getTotal());
             responsePage.setRecords(urlMapPage.getRecords().stream().map(x -> {
                 TenantUrlVo vo = new TenantUrlVo();
                 BeanUtils.copyProperties(x, vo);
+                vo.setIntactUrl(applicationConfig.getAddress() + x.getSurl());
                 return vo;
             }).collect(Collectors.toList()));
         }

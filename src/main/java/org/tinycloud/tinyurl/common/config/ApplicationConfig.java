@@ -45,6 +45,11 @@ public class ApplicationConfig {
      */
     private Integer apiAuthTimeout = 1800;
 
+    /**
+     * 短链地址
+     */
+    private String address;
+
     public String getName() {
         return name;
     }
@@ -91,5 +96,13 @@ public class ApplicationConfig {
 
     public void setApiAuthTimeout(Integer apiAuthTimeout) {
         this.apiAuthTimeout = apiAuthTimeout;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
     }
 }

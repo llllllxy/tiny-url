@@ -257,9 +257,6 @@
                 success: function (data) {
                     $(container).html(data);
                     element.render();
-
-                    // 当为窄屏模式时，自动收起菜单
-                    $('#header').toggleClass('menu_close');
                 },
                 error: function (xhr, textStatus, thrown) {
                     return layer.msg('Status:' + xhr.status + '，' + xhr.statusText + '，请稍后再试！');

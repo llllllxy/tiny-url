@@ -39,4 +39,6 @@ public class TenantUrlVo implements Serializable {
     private String remark;
 
     private Long tenantId;
+
+    private String intactUrl;
 }

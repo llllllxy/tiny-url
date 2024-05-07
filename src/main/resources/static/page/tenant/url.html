@@ -6,6 +6,14 @@
     .special:hover {
         color: #7E96E6
     }
+
+    .qrcode-inner {
+        margin-top: 25px;
+        margin-left: 50px;
+        width: 100px;
+        height: 100px;
+        background-color: #00f7de;
+    }
 </style>
 
 <div class="layuimini-container layuimini-page-anim">
@@ -66,6 +74,7 @@
 </script>
 
 <script type="text/html" id="currentTableBar">
+    <a class="layui-btn layui-btn-xs data-count-qrcode" lay-event="qrcode">二维码</a>
     <a class="layui-btn layui-btn-xs data-count-edit" lay-event="edit">编辑</a>
     <a class="layui-btn layui-btn-xs layui-btn-danger data-count-delete" lay-event="delete">删除</a>
 </script>
@@ -116,7 +125,6 @@
     </div>
 </script>
 
-
 <script type="text/html" id="editDialog">
     <div class="layuimini-form">
         <form class="layui-form" action="" lay-filter="edit-form" id="edit-form">
@@ -138,6 +146,12 @@
                 <button class="layui-btn layui-btn-primary" type="button" lay-filter="closeEditDialog">取消</button>
             </div>
         </form>
+    </div>
+</script>
+
+<script type="text/html" id="qrcodeDialog">
+    <div>
+        <div id="qrCodeDiv" class="qrcode-inner"> </div>
     </div>
 </script>
 
@@ -177,7 +191,7 @@
             cols: [[
                 {field: 'id', width: '10%', title: 'ID', sort: true, align: 'center', fixed: 'left'},
                 {
-                    field: 'surl', width: '10%', title: '短链', templet: function (d) {
+                    field: 'surl', width: '6%', title: '短链', templet: function (d) {
                         return `<a class="special" href="javascript:;" lay-event="copy" onmouseover="showTip(this)" onmouseleave="closeTip(this)">${d.surl}</a>`
                     }
                 },
@@ -187,7 +201,7 @@
                 {field: 'expireTime', title: '过期时间', width: '10%'},
                 {field: 'status', title: '状态', width: '10%', align: 'center', templet: '#switchTpl'},
                 {field: 'remark', width: '10%', title: '备注信息'},
-                {title: '操作', width: '10%', toolbar: '#currentTableBar', align: "center"}
+                {title: '操作', width: '14%', toolbar: '#currentTableBar', align: "center"}
             ]],
             autoSort: false,
             limits: [10, 15, 20, 25, 50, 100],
@@ -371,6 +385,30 @@
                 });
             } else if (obj.event === 'copy') {
                 handleClipboard(lineData.surl)
+            } else if (obj.event === 'qrcode') {
+                var index = layer.open({
+                    title: '二维码',
+                    type: 1,
+                    shade: 0.2,
+                    shadeClose: false,
+                    area: ['200px', '200px'],
+                    content: $('#qrcodeDialog').html(),
+                    success: function (layero, dIndex) {
+                        var originalDOM = layero.find("#qrCodeDiv");
+                        var qrCode = new QRCode(originalDOM.get(0), {
+                            text: lineData.intactUrl, //text必须是字符串
+                            width: 100,
+                            height: 100,
+                            colorDark: "#333333", //二维码颜色
+                            colorLight: "#ffffff", //二维码背景色
+                            correctLevel: QRCode.CorrectLevel.L //容错率，L/M/H
+                        });
+                    },
+                    end: function (index) {
+
+                    }
+                });
+
             }
         });
 

@@ -2,11 +2,11 @@ package org.tinycloud.tinyurl.function.portal.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.tinycloud.tinyurl.common.annotation.AccessLimit;
+import org.tinycloud.tinyurl.common.config.ApplicationConfig;
 import org.tinycloud.tinyurl.common.constant.GlobalConstant;
 import org.tinycloud.tinyurl.common.model.ApiResult;
 import org.tinycloud.tinyurl.common.utils.LocalHostUtils;
@@ -34,7 +34,7 @@ public class PortalController {
     private UrlMapService urlMapService;
 
     @Autowired
-    private Environment environment;
+    private ApplicationConfig applicationConfig;
 
     @GetMapping("/")
     public String redirect() {
@@ -94,7 +94,7 @@ public class PortalController {
             tUrlMap.setRemark("门户平台生成");
             tUrlMap = urlMapService.generateAndSave(tUrlMap);
             String host = LocalHostUtils.getLocalHost();
-            return ApiResult.success("http://" + host + ":" + environment.getProperty("server.port") + "/" + tUrlMap.getSurl(), "转换短链成功！");
+            return ApiResult.success(applicationConfig.getAddress() + tUrlMap.getSurl(), "转换短链成功！");
         }
         return ApiResult.fail("请输入正确的网址链接，注意以http://或https://开头");
     }

@@ -10,6 +10,7 @@ tinyurl:
   tenant-auth-timeout: 1800
   admin-auth-timeout: 1800
   api-auth-timeout: 1800
+  address: http://127.0.0.1:9999/
 
 
 server:
