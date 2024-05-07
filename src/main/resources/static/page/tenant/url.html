@@ -1,9 +1,9 @@
 <style>
-    a {
+    .special {
         color: #5E7CE0;
         text-decoration: underline;
     }
-    a:hover {
+    .special:hover {
         color: #7E96E6
     }
 </style>
@@ -178,7 +178,7 @@
                 {field: 'id', width: '10%', title: 'ID', sort: true, align: 'center', fixed: 'left'},
                 {
                     field: 'surl', width: '10%', title: '短链', templet: function (d) {
-                        return `<a href="javascript:;" lay-event="copy" onmouseover="showTip(this)" onmouseleave="closeTip(this)">${d.surl}</a>`
+                        return `<a class="special" href="javascript:;" lay-event="copy" onmouseover="showTip(this)" onmouseleave="closeTip(this)">${d.surl}</a>`
                     }
                 },
                 {field: 'lurl', width: '20%', title: '原始链接'},

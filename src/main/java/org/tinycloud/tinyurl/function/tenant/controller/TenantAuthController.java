@@ -54,6 +54,12 @@ public class TenantAuthController {
     public ApiResult<?> initMenu() {
         Map<String, Object> initInfo = new HashMap<>();
 
+        Map<String, String> menuItem0 = new HashMap<>();
+        menuItem0.put("title", "仪表盘");
+        menuItem0.put("href", "page/tenant/dashboard.html");
+        menuItem0.put("icon", "fa fa-navicon");
+        menuItem0.put("target", "_self");
+
         Map<String, String> menuItem1 = new HashMap<>();
         menuItem1.put("title", "短链管理");
         menuItem1.put("href", "page/tenant/url.html");
@@ -73,13 +79,14 @@ public class TenantAuthController {
         menuItem3.put("target", "_self");
 
         List<Map<String, String>> menuList = new ArrayList<>();
+        menuList.add(menuItem0);
         menuList.add(menuItem1);
         menuList.add(menuItem2);
         menuList.add(menuItem3);
 
         Map<String, String> homeInfo = new HashMap<>();
         homeInfo.put("title", "首页");
-        homeInfo.put("href", "page/tenant/dashboard.html");
+        homeInfo.put("href", "page/tenant/welcome.html");
 
         Map<String, String> logoInfo = new HashMap<>();
         logoInfo.put("title", "租户控制台");
