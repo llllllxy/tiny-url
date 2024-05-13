@@ -12,17 +12,17 @@
 
 
 ## 已实现功能
-1、将长链接转换成短链接，访问短链接时， 302重定向至原始长链接
+1、将长链接转换成短链接，访问短链接时，302重定向至原始长链接
 
-2、支持设置短链的有效期限
+2、支持设置短链的有效期限，生成短链访问二维码
 
 3、支持记录访问次数，访问日志
 
-4、使用布隆过滤器优化短链冲突问题，提高高并发下的性能表现
+4、使用布隆过滤器优化短链冲突问题，优化高并发下的性能表现
 
-5、支持多租户功能，租户注册后可拥有独立的后台数据管理功能（包括短链管理、数据统计，访问日志等）
+5、支持多租户管理功能，租户注册后可拥有独立的后台数据管理功能（包括仪表盘、短链管理、访问日志管理、数据统计等）
 
-6、租户支持通过API调用方式生成短链接、禁用/启用短链接、更新短链有效期限、查看短链接统计信息等功能，提供成熟的API接口文档和鉴权方案（access_key + access_key_secret）
+6、支持租户通过API调用方式生成短链接、禁用/启用短链接、更新短链有效期限、查看短链接信息等功能；提供成熟的API接口文档和鉴权方案（access_key + access_key_secret）
 
 ## 计划实现功能
 1、超级管理员系统管理功能（用于管理租户）
@@ -30,8 +30,6 @@
 2、带访问密码的短链，访问时重定向到输入密码的页面，输入密码后方可访问
 
 3、带最大可用次数的短链，如设置访问限制100次，超出后则禁止访问
-
-4、API接口提供更丰富的功能(如查询接口、短链还原长链接口等)
 
 ## 部分界面展示
 首页
@@ -56,8 +54,9 @@ api接口文档页
 ![租户注册](src/main/resources/static/images/readme/租户注册.png)
 <br/><br/>
 租户后台数据管理
+![租户首页](src/main/resources/static/images/readme/租户首页.png)
 ![仪表盘](src/main/resources/static/images/readme/仪表盘.png)
-![短链列表](src/main/resources/static/images/readme/短链列表.png)
+![短链列表](src/main/resources/static/images/readme/短链管理.png)
 ![数据统计](src/main/resources/static/images/readme/数据统计.png)
 ![访问日志](src/main/resources/static/images/readme/访问日志.png)
 
@@ -82,7 +81,7 @@ api接口文档页
 2. 修改配置文件中`application.yml`中`数据库`和`Redis`连接信息
 3. 运行启动类`TinyUrlApplication`，即可正常启动项目
 4. 平台首页地址：`http://localhost:9999/`
-5. 租户登录地址：`http://192.168.0.107:9999/page/tenant/login.html`  账户密码 `zhangsan / 123456`
+5. 租户登录地址：`http://localhost:9999/page/tenant/login.html`  账户密码 `zhangsan / 123456`
 
 ## 实现逻辑
 1、使用 MurmurHash 算法将原始长链接 hash 为 32 位散列值，将散列值转为 BASE62 编码 ，即为短链接。
