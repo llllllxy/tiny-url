@@ -367,7 +367,7 @@
                 });
                 return false;
             } else if (obj.event === 'delete') {
-                layer.confirm('确定删除此项目吗', function (index) {
+                layer.confirm('确定删除此短链吗', function (index) {
                     layer.close(index);
                     AjaxUtil.get({
                         url: '/tenant/url/del?id=' + lineData.id,
