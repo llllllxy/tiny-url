@@ -39,20 +39,22 @@ public class WebMvcConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         List<String> tenantIncludePaths = Lists.newArrayList(
-            "/tenant/auth/logout",
-            "/tenant/auth/getInfo",
-            "/tenant/auth/initMenu",
-            "/tenant/auth/getTenantInfo",
-            "/tenant/auth/editTenantInfo",
-            "/tenant/auth/getAkInfo",
-            "/tenant/auth/resetAkInfo",
-            "/tenant/auth/editIpSetting",
+                "/tenant/auth/logout",
+                "/tenant/auth/getInfo",
+                "/tenant/auth/initMenu",
+                "/tenant/auth/getTenantInfo",
+                "/tenant/auth/editTenantInfo",
+                "/tenant/auth/getAkInfo",
+                "/tenant/auth/resetAkInfo",
+                "/tenant/auth/editIpSetting",
+                "/tenant/auth/editPassword",
 
-            "/tenant/tenant/**", // 租户信息管理
-            "/tenant/url/**", // 租户url短链管理
-            "/tenant/accessLog/**", // 租户短链访问日志管理
-            "/tenant/dashboard/**", // 租户仪表盘
-            "/tenant/statistic/**" // 租户数据统计管理
+
+                "/tenant/tenant/**", // 租户信息管理
+                "/tenant/url/**", // 租户url短链管理
+                "/tenant/accessLog/**", // 租户短链访问日志管理
+                "/tenant/dashboard/**", // 租户仪表盘
+                "/tenant/statistic/**" // 租户数据统计管理
         );
 
         // 注册租户会话拦截器

@@ -7,6 +7,9 @@ public enum TenantErrorCode {
     TENANT_IS_DISABLE("3003", "租户已被禁用，请联系工作人员！"),
     CAPTCHA_IS_MISMATCH("3004", "验证码错误或已过期！"),
     EMAILCODE_IS_MISMATCH("3005", "邮箱验证码错误或已过期！"),
+    TENANT_IS_NOT_EXIST("3006", "租户不存在！"),
+    TENANT_PASSWORD_IS_ENTERED_INCONSISTENTLY("3007", "新密码前后输入不一致，请检查！"),
+    TENANT_OLD_PASSWORD_IS_WRONG("3008", "旧密码不正确，请检查！"),
 
     TENANT_URL_NOT_EXIST("3100", "此短链不存在"),
     TENANT_URL_IS_ENABLE("3101", "只可启用'停用'状态的短链"),

@@ -21,10 +21,7 @@ import org.tinycloud.tinyurl.common.utils.cipher.SM3Utils;
 import org.tinycloud.tinyurl.common.utils.web.UserAgentUtils;
 import org.tinycloud.tinyurl.function.admin.bean.vo.MailConfigVo;
 import org.tinycloud.tinyurl.function.admin.service.MailConfigService;
-import org.tinycloud.tinyurl.function.tenant.bean.dto.IpSettingDto;
-import org.tinycloud.tinyurl.function.tenant.bean.dto.TenantEditDto;
-import org.tinycloud.tinyurl.function.tenant.bean.dto.TenantLoginDto;
-import org.tinycloud.tinyurl.function.tenant.bean.dto.TenantRegisterDto;
+import org.tinycloud.tinyurl.function.tenant.bean.dto.*;
 import org.tinycloud.tinyurl.function.tenant.bean.entity.TTenant;
 import org.tinycloud.tinyurl.function.tenant.bean.vo.TenantCaptchaCodeVo;
 import org.tinycloud.tinyurl.function.tenant.bean.vo.TenantInfoVo;
@@ -282,5 +279,55 @@ public class TenantAuthService {
         entity.setTenantName(tenantName);
         this.tenantMapper.insert(entity);
         return true;
+    }
+
+    public boolean editPassword(TenantEditPasswordDto dto) {
+        String oldPassword = dto.getOldPassword();
+        String newPassword = dto.getNewPassword();
+        String againPassword = dto.getAgainPassword();
+        String captcha = dto.getCaptcha();
+        String uuid = dto.getUuid();
+
+        String codeRedisKey = GlobalConstant.TENANT_CAPTCHA_CODE_REDIS_KEY + uuid;
+        String redisCache = this.stringRedisTemplate.opsForValue().get(codeRedisKey);
+        if (StrUtils.isEmpty(redisCache)) {
+            throw new TenantException(TenantErrorCode.CAPTCHA_IS_MISMATCH);
+        }
+        String code = redisCache.split("&")[0];
+        String privateKey = redisCache.split("&")[1];
+        if (!captcha.equalsIgnoreCase(code)) {
+            throw new TenantException(TenantErrorCode.CAPTCHA_IS_MISMATCH);
+        }
+        TTenant entity = this.tenantMapper.selectOne(
+                Wrappers.<TTenant>lambdaQuery().eq(TTenant::getId, TenantHolder.getTenantId())
+                        .eq(TTenant::getDelFlag, GlobalConstant.NOT_DELETED));
+        if (Objects.isNull(entity)) {
+            throw new TenantException(TenantErrorCode.TENANT_IS_NOT_EXIST);
+        }
+        if (GlobalConstant.DISABLED.equals(entity.getStatus())) {
+            throw new TenantException(TenantErrorCode.TENANT_IS_DISABLE);
+        }
+
+        String oldPasswordDecrypt = SM2Utils.decrypt(privateKey, oldPassword);
+        String newPasswordDecrypt = SM2Utils.decrypt(privateKey, newPassword);
+        String againPasswordDecrypt = SM2Utils.decrypt(privateKey, againPassword);
+
+        if (StrUtils.isEmpty(oldPasswordDecrypt) || StrUtils.isEmpty(newPasswordDecrypt) || StrUtils.isEmpty(againPasswordDecrypt)) {
+            throw new TenantException(TenantErrorCode.CAPTCHA_IS_MISMATCH);
+        }
+        if (!newPasswordDecrypt.equals(againPasswordDecrypt)) {
+            throw new TenantException(TenantErrorCode.TENANT_PASSWORD_IS_ENTERED_INCONSISTENTLY);
+        }
+        String oldPasswordDecryptHash = SM3Utils.hash(oldPasswordDecrypt);
+        String newPasswordDecryptHash = SM3Utils.hash(newPasswordDecrypt);
+
+        if (!oldPasswordDecryptHash.equals(entity.getTenantPassword())) {
+            throw new TenantException(TenantErrorCode.TENANT_OLD_PASSWORD_IS_WRONG);
+        }
+        LambdaUpdateWrapper<TTenant> wrapper = new LambdaUpdateWrapper<>();
+        wrapper.eq(TTenant::getId, TenantHolder.getTenantId());
+        wrapper.set(TTenant::getTenantPassword, newPasswordDecryptHash);
+        int rows = this.tenantMapper.update(wrapper);
+        return rows > 0;
     }
 }

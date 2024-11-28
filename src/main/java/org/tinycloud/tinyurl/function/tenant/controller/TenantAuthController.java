@@ -7,10 +7,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import org.tinycloud.tinyurl.common.model.ApiResult;
-import org.tinycloud.tinyurl.function.tenant.bean.dto.IpSettingDto;
-import org.tinycloud.tinyurl.function.tenant.bean.dto.TenantEditDto;
-import org.tinycloud.tinyurl.function.tenant.bean.dto.TenantLoginDto;
-import org.tinycloud.tinyurl.function.tenant.bean.dto.TenantRegisterDto;
+import org.tinycloud.tinyurl.function.tenant.bean.dto.*;
 import org.tinycloud.tinyurl.function.tenant.bean.vo.TenantCaptchaCodeVo;
 import org.tinycloud.tinyurl.function.tenant.bean.vo.TenantInfoVo;
 import org.tinycloud.tinyurl.function.tenant.service.TenantAuthService;
@@ -133,6 +130,11 @@ public class TenantAuthController {
     @PostMapping("/register")
     public ApiResult<Boolean> register(@Validated @RequestBody TenantRegisterDto dto) {
         return ApiResult.success(tenantAuthService.register(dto), "注册成功！");
+    }
+
+    @PostMapping("/editPassword")
+    public ApiResult<Boolean> editPassword(@Validated @RequestBody TenantEditPasswordDto dto) {
+        return ApiResult.success(tenantAuthService.editPassword(dto), "修改密码成功，即将跳转到登录页！");
     }
 
 }
