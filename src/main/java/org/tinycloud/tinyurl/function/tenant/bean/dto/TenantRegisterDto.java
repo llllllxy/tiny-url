@@ -20,10 +20,10 @@ public class TenantRegisterDto implements Serializable {
     @Serial
     private static final long serialVersionUID = -1L;
 
-    @NotEmpty(message = "登录账户不能为空")
+    @NotEmpty(message = "组织团队账号不能为空")
     private String tenantAccount;
 
-    @NotEmpty(message = "登录账户不能为空")
+    @NotEmpty(message = "组织团队名称不能为空")
     private String tenantName;
 
     @NotEmpty(message = "登录密码不能为空")

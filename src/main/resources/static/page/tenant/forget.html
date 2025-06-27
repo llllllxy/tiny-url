@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>租户控制台-注册</title>
+    <title>租户控制台-重置密码</title>
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta http-equiv="Access-Control-Allow-Origin" content="*">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -110,47 +110,7 @@
         <div class="layui-form login-form">
             <form class="layui-form" action="">
                 <div class="layui-form-item logo-title">
-                    <h1>创建组织团队账号</h1>
-                </div>
-
-                <div class="layui-form-item">
-                    <div class="layui-input-wrap">
-                        <div class="layui-input-prefix">
-                            <i class="layui-icon layui-icon-username"></i>
-                        </div>
-                        <input type="text" name="tenantAccount" value="" lay-verify="required|tenantAccount"
-                               placeholder="组织团队账号" lay-reqtext="请填写组织团队账号" autocomplete="off" class="layui-input">
-                    </div>
-                </div>
-
-                <div class="layui-form-item">
-                    <div class="layui-input-wrap">
-                        <div class="layui-input-prefix">
-                            <i class="layui-icon layui-icon-form"></i>
-                        </div>
-                        <input type="text" name="tenantName" value="" lay-verify="required|tenantName" placeholder="组织团队名称"
-                               lay-reqtext="请填写组织团队名称" autocomplete="off" class="layui-input">
-                    </div>
-                </div>
-
-                <div class="layui-form-item">
-                    <div class="layui-input-wrap">
-                        <div class="layui-input-prefix">
-                            <i class="layui-icon layui-icon-password"></i>
-                        </div>
-                        <input type="password" name="password" value="" lay-verify="required|password" placeholder="密码"
-                               lay-reqtext="请填写密码" autocomplete="off" class="layui-input" lay-affix="eye">
-                    </div>
-                </div>
-
-                <div class="layui-form-item">
-                    <div class="layui-input-wrap">
-                        <div class="layui-input-prefix">
-                            <i class="layui-icon layui-icon-password"></i>
-                        </div>
-                        <input type="password" name="confirmPassword" value="" lay-verify="required|confirmPassword"
-                               placeholder="确认密码" lay-reqtext="请填写密码" autocomplete="off" class="layui-input" lay-affix="eye">
-                    </div>
+                    <h1>重置密码</h1>
                 </div>
 
                 <div class="layui-form-item">
@@ -158,16 +118,17 @@
                         <div class="layui-col-xs7">
                             <div class="layui-input-wrap">
                                 <div class="layui-input-prefix">
-                                    <i class="layui-icon layui-icon-email"></i>
+                                    <i class="layui-icon layui-icon-username"></i>
                                 </div>
-                                <input type="text" name="tenantEmail" id="tenantEmail" value=""
-                                       lay-verify="required|email" placeholder="邮箱" lay-reqtext="请填写邮箱"
-                                       autocomplete="off" class="layui-input">
+                                <input type="text" name="tenantAccount" value="" lay-verify="required|tenantAccount"
+                                       placeholder="组织团队账号" lay-reqtext="请填写组织团队账号" autocomplete="off"
+                                       class="layui-input">
                             </div>
                         </div>
                         <div class="layui-col-xs5">
                             <div style="margin-left: 11px;">
-                                <button type="button" class="layui-btn layui-btn-fluid layui-btn-primary" lay-on="sendEmail" id="sendEmail">获取验证码
+                                <button type="button" class="layui-btn layui-btn-fluid layui-btn-primary"
+                                        lay-on="sendEmail" id="sendEmail">获取验证码
                                 </button>
                             </div>
                         </div>
@@ -179,13 +140,38 @@
                         <div class="layui-input-prefix">
                             <i class="layui-icon layui-icon-vercode"></i>
                         </div>
-                        <input type="text" name="emailCode" value="" lay-verify="required|emailCode" placeholder="验证码"
-                               lay-reqtext="请填写验证码" autocomplete="off" class="layui-input">
+                        <input type="text" name="emailCode" value="" lay-verify="required|emailCode"
+                               placeholder="请填写验证码" lay-reqtext="请填写验证码" autocomplete="off"
+                               class="layui-input">
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <div class="layui-input-wrap">
+                        <div class="layui-input-prefix">
+                            <i class="layui-icon layui-icon-password"></i>
+                        </div>
+                        <input type="password" name="password" value="" lay-verify="required|password"
+                               placeholder="请填写新密码" lay-reqtext="请填写新密码" autocomplete="off"
+                               class="layui-input" lay-affix="eye">
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <div class="layui-input-wrap">
+                        <div class="layui-input-prefix">
+                            <i class="layui-icon layui-icon-password"></i>
+                        </div>
+                        <input type="password" name="confirmPassword" value="" lay-verify="required|confirmPassword"
+                               placeholder="请再次输入新密码" lay-reqtext="请再次输入新密码" autocomplete="off"
+                               class="layui-input" lay-affix="eye">
                     </div>
                 </div>
 
                 <div class="layui-form-item" style="top: 10px">
-                    <button class="layui-btn layui-btn-fluid" lay-submit lay-filter="register" id="register">立即提交</button>
+                    <button class="layui-btn layui-btn-fluid" lay-submit lay-filter="resetPassword" id="register">
+                        立即提交
+                    </button>
                 </div>
             </form>
         </div>
@@ -230,15 +216,16 @@
                 return false;
             }
 
-            var isvalid = form.validate('#tenantEmail'); // 主动触发验证，v2.7.0 新增
-            var emailInput = $('input[name="tenantEmail"]').val();
+            var isvalid = form.validate('#tenantAccount'); // 主动触发验证，v2.7.0 新增
+            var tenantAccount = $('input[name="tenantAccount"]').val();
             if (isvalid) {
                 // 此处可继续书写「发送验证码」等后续逻辑
                 AjaxUtil.get({
-                    url: "/tenant/auth/sendEmail?receiveEmail=" + emailInput,
+                    url: "/tenant/auth/sendEmailForResetPassword?tenantAccount=" + tenantAccount,
                     success: function (res) {
                         if (res.code == 0) {
-                            layer.msg(res.msg);
+                            layer.msg(res.msg, {time: 2000});
+
                             verifyKey = res.data.uuid;
                             publicKey = res.data.publicKey;
                             // 获取成功，则将按钮设置成不允许点击，60秒内只允许一次
@@ -276,14 +263,14 @@
         });
 
         // 进行登录操作
-        form.on('submit(register)', function (data) {
+        form.on('submit(resetPassword)', function (data) {
             data = data.field;
             if (isEmpty(publicKey)) {
-                layer.msg('请先获取验证码');
+                layer.msg('请先获取邮箱验证码');
                 return false;
             }
             if (isEmpty(verifyKey)) {
-                layer.msg('请先获取验证码');
+                layer.msg('请先获取邮箱验证码');
                 return false;
             }
 
@@ -296,13 +283,13 @@
             data.uuid = verifyKey;
             startLoading();
             AjaxUtil.postJSON({
-                url: "/tenant/auth/register",
+                url: "/tenant/auth/resetPassword",
                 data: JSON.stringify(data),
                 success: function (res) {
                     stopLoading();
                     if (res.code == 0) {
-                        layer.msg('注册成功，请重新登录!', {
-                            time: 1000
+                        layer.msg('重置密码成功，请重新登录!', {
+                            time: 2000
                         }, function () {
                             window.location = '/page/tenant/login.html';
                         });

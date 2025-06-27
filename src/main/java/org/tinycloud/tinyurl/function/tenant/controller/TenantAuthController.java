@@ -137,4 +137,9 @@ public class TenantAuthController {
         return ApiResult.success(tenantAuthService.editPassword(dto), "修改密码成功，即将跳转到登录页！");
     }
 
+    @GetMapping("/sendEmailForResetPassword")
+    public ApiResult<Map<String, String>> sendEmailForResetPassword(@RequestParam(value = "tenantAccount") String tenantAccount) {
+//        return ApiResult.success(tenantAuthService.sendEmailForResetPassword(tenantAccount), "邮件发送成功！");
+        return null;
+    }
 }

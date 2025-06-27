@@ -96,6 +96,7 @@ const AjaxUtil = {
         $.ajax({
             url: options.url,
             type: options.type,
+            data: options.data,
             timeout: options.timeout,
             async: options.async,
             cache: options.cache,
