@@ -57,7 +57,7 @@ $.ajax = function (opt) {
             }
             // 设置token
             if (sessionStorage.getItem('tenant_token')) {
-                XHR.setRequestHeader("tenant_token", sessionStorage.getItem('tenant_token'));
+                XHR.setRequestHeader("tenant-token", sessionStorage.getItem('tenant_token'));
             }
             if (sessionStorage.getItem('admin_token')) {
                 XHR.setRequestHeader("admin_token", sessionStorage.getItem('admin_token'));
