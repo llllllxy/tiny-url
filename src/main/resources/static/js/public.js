@@ -60,7 +60,7 @@ $.ajax = function (opt) {
                 XHR.setRequestHeader("tenant-token", sessionStorage.getItem('tenant_token'));
             }
             if (sessionStorage.getItem('admin_token')) {
-                XHR.setRequestHeader("admin_token", sessionStorage.getItem('admin_token'));
+                XHR.setRequestHeader("admin-token", sessionStorage.getItem('admin_token'));
             }
             XHR.setRequestHeader("Powered-By", 'TINYCLOUD');
             // 提交前回调方法
