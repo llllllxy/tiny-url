@@ -62,6 +62,12 @@ public class TMailConfig implements Serializable {
     private String receiveEmail;
 
     /**
+     * 是否开启ssl（0--开启--1关闭）
+     */
+    @TableField(value = "ssl_flag")
+    private Integer sslFlag;
+
+    /**
      * 删除标志（0--未删除1--已删除）
      */
     @TableField(value = "del_flag")

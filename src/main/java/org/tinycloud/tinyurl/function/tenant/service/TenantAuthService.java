@@ -238,7 +238,7 @@ public class TenantAuthService {
                 + "如果不是本人操作，请忽略。"
                 + "<br/><br/>"
                 + "TINY短链 - 专业的短链服务商";
-        EmailUtils.sendMsg(mailConfig.getEmailAccount(), mailConfig.getEmailPassword(), mailConfig.getSmtpAddress(), mailConfig.getSmtpPort(),
+        EmailUtils.sendMsg(mailConfig.getEmailAccount(), mailConfig.getEmailPassword(), mailConfig.getSmtpAddress(), mailConfig.getSmtpPort(), mailConfig.getSslFlag() == 0,
                 new String[]{receiveEmail}, emailTitle, emailMsg);
 
         // 将验证码和私钥，存入redis 60秒

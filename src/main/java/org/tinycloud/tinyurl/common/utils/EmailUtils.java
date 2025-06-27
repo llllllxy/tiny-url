@@ -1,5 +1,6 @@
 package org.tinycloud.tinyurl.common.utils;
 
+import com.sun.mail.util.MailSSLSocketFactory;
 import jakarta.activation.DataHandler;
 import jakarta.activation.FileDataSource;
 import jakarta.mail.Session;
@@ -22,7 +23,6 @@ import java.util.Properties;
 public class EmailUtils {
     private static final Logger log = LoggerFactory.getLogger(EmailUtils.class);
 
-
     /**
      * 发送邮件（不带附件）
      *
@@ -35,9 +35,9 @@ public class EmailUtils {
      * @param content            内容
      * @return true成功，false失败
      */
-    public static boolean sendMsg(String account, String password, String host, String port,
+    public static boolean sendMsg(String account, String password, String host, String port, boolean isSSL,
                                   String[] receiveMailAccount, String title, String content) {
-        return sendMsg(account, password, host, port, receiveMailAccount, title, content, null);
+        return sendMsg(account, password, host, port, isSSL, receiveMailAccount, title, content, null);
     }
 
 
@@ -54,7 +54,7 @@ public class EmailUtils {
      * @param fileList           邮件附件列表
      * @return true成功，false失败
      */
-    public static boolean sendMsg(String account, String password, String host, String port,
+    public static boolean sendMsg(String account, String password, String host, String port, boolean isSSL,
                                   String[] receiveMailAccount, String title, String content, List<File> fileList) {
         try {
             // 1. 创建参数配置, 用于连接邮件服务器的参数配置
@@ -66,6 +66,13 @@ public class EmailUtils {
             props.setProperty("mail.smtp.connectiontimeout", "15000");
             props.setProperty("mail.smtp.timeout", "15000");
             props.setProperty("mail.smtp.writetimeout", "15000");
+            if (isSSL) {
+                MailSSLSocketFactory sslSocketFactory = new MailSSLSocketFactory();
+                sslSocketFactory.setTrustAllHosts(true);
+                props.setProperty("mail.smtp.ssl.enable", "true"); // 是否开启ssl，一般开启ssl后使用465端口，否则使用25端口
+                props.put("mail.smtp.ssl.socketFactory", sslSocketFactory);
+            }
+
             // 2. 根据配置创建会话对象, 用于和邮件服务器交互
             Session session = Session.getInstance(props);
             // 设置为debug模式, 可以查看详细的发送 log

@@ -41,4 +41,9 @@ public class MailConfigVo implements Serializable {
      * 收件邮箱地址(多个用逗号隔开)
      */
     private String receiveEmail;
+
+    /**
+     * 是否开启ssl（0--开启--1关闭）
+     */
+    private Integer sslFlag;
 }
